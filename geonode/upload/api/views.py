@@ -51,6 +51,15 @@ from .permissions import UploadPermissionsFilter
 from ..models import Upload, UploadParallelismLimit, UploadSizeLimit
 from ..views import view as upload_view
 
+from geonode.views import (
+    get_resource_size,
+    get_uid,
+    check_limit_size,
+    update_userStorage
+)
+from django.http import HttpResponse
+import zipfile
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -155,6 +164,29 @@ class UploadViewSet(DynamicModelViewSet):
         if not user or not user.is_authenticated:
             raise AuthenticationFailed()
 
+        # Check file size
+        username = user.get_username()
+        uid = get_uid(username=username)
+        file_name = request.FILES.get('base_file')
+        file_size = 0
+        if zipfile.is_zipfile(file_name):
+            zp = zipfile.ZipFile(file_name)
+            size = sum([zinfo.file_size for zinfo in zp.filelist])
+            file_size = float(size)/1024
+        else:
+            for filename, file in request.FILES.items():
+                if filename != 'shp_file':
+                    file_size += request.FILES[filename].size/1024.0
+        # check limit size
+        is_able_upload = check_limit_size(uid,file_size,'dataset')
+        if not is_able_upload:
+            #raise ValidationError("Storage usage exceed limit.")
+            return HttpResponse(
+                content = json.dumps({'error':'Storage usage exceed limit.'}),
+                status = 400,
+                content_type = "application/json"
+            )
+
         # Custom upload steps defined by user
         non_interactive = json.loads(
             request.data.get("non_interactive", "false").lower()
@@ -168,6 +200,8 @@ class UploadViewSet(DynamicModelViewSet):
                     request,
                     step
                 )
+            size_after_upload = json.loads(get_resource_size(uid,1))['total_size']['net']
+            update_userStorage(uid,size_after_upload)
             return response
 
         # Upload steps defined by geonode.upload.utils._pages
@@ -179,6 +213,8 @@ class UploadViewSet(DynamicModelViewSet):
                 next_step
             )
             if is_final:
+                size_after_upload = json.loads(get_resource_size(uid,1))['total_size']['net']
+                update_userStorage(uid,size_after_upload)
                 return response
         # After performing 7 steps if we don't get any final response
         return response

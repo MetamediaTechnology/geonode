@@ -932,7 +932,8 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                 func_name='delete',
                 geonode_resource=resource,
                 input_params={
-                    "uuid": resource.uuid
+                    "uuid": resource.uuid,
+                    'uid': resource.owner_id
                 }
             )
             resouce_service_dispatcher.apply_async((_exec_request.exec_id,))

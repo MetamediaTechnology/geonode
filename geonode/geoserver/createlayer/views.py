@@ -29,6 +29,12 @@ from geonode.security.permissions import DEFAULT_PERMS_SPEC
 from .forms import NewDatasetForm
 from .utils import create_dataset
 
+from geonode.views import (
+    get_resource_size,
+    get_uid,
+    check_limit_size,
+    update_userStorage,
+)
 
 @login_required
 def dataset_create(request, template='createlayer/dataset_create.html'):
@@ -39,18 +45,29 @@ def dataset_create(request, template='createlayer/dataset_create.html'):
     if request.method == 'POST':
         form = NewDatasetForm(request.POST)
         if form.is_valid():
-            try:
-                name = form.cleaned_data['name']
-                name = slugify(name.replace(".", "_"))
-                title = form.cleaned_data['title']
-                geometry_type = form.cleaned_data['geometry_type']
-                attributes = form.cleaned_data['attributes']
-                permissions = DEFAULT_PERMS_SPEC
-                layer = create_dataset(name, title, request.user.username, geometry_type, attributes)
-                layer.set_permissions(json.loads(permissions), created=True)
-                return redirect(layer)
-            except Exception as e:
-                error = f'{e} ({type(e)})'
+            username = request.user
+            uid = get_uid(username=username)
+            is_able_upload = check_limit_size(uid,0)
+            if not is_able_upload:
+            #raise ValidationError("Storage usage exceed limit.")
+                error = 'Storage usage exceed limit.'
+            else:
+                try:
+                    name = form.cleaned_data['name']
+                    name = slugify(name.replace(".", "_"))
+                    title = form.cleaned_data['title']
+                    geometry_type = form.cleaned_data['geometry_type']
+                    attributes = form.cleaned_data['attributes']
+                    permissions = DEFAULT_PERMS_SPEC
+                    layer = create_dataset(name, title, request.user.username, geometry_type, attributes)
+                    layer.set_permissions(json.loads(permissions), created=True)
+
+                    size_after_update = json.loads(get_resource_size(uid,1))['total_size']['net']
+                    update_userStorage(uid,size_after_update)
+
+                    return redirect(layer)
+                except Exception as e:
+                    error = f'{e} ({type(e)})'
     else:
         form = NewDatasetForm()
 

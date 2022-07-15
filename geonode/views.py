@@ -35,6 +35,13 @@ from geonode import get_version
 from geonode.groups.models import GroupProfile
 from geonode.geoapps.models import GeoApp
 
+import json
+import os
+from django.db import connection
+import sys
+import psycopg2
+import requests
+from geonode.utils import OGC_Servers_Handler
 
 class AjaxLoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
@@ -203,3 +210,229 @@ def metadata_update_redirect(request):
     url = request.POST['url']
     client_redirect_url = hookset.metadata_update_redirect(url, request=request)
     return HttpResponse(content=client_redirect_url)
+
+def get_uid(user_id=None,username=None,resource_id=None,resource_name=None,resource_type=None):
+    cursor = connection.cursor()
+    if user_id:
+        query_string = f"""SELECT uid FROM socialaccount_socialaccount
+                    WHERE user_id = {user_id};"""
+    elif username:
+        query_string = f"""SELECT uid FROM socialaccount_socialaccount social
+                    LEFT JOIN people_profile people ON social.user_id = people.id
+                    WHERE people.username = '{username}';"""
+    elif resource_id:
+        query_string = f"""SELECT uid FROM socialaccount_socialaccount social
+                    LEFT JOIN base_resourcebase resource ON social.user_id = resource.owner_id
+                    WHERE resource.id = {resource_id};"""
+    elif resource_name and resource_type:
+        query_string = f"""SELECT uid FROM socialaccount_socialaccount social
+                    LEFT JOIN base_resourcebase resource ON social.user_id = resource.owner_id
+                    WHERE resource.title = '{resource_name}' AND resource.resource_type = '{resource_type}';"""
+    else:
+        return None
+    cursor.execute(query_string)
+    result = cursor.fetchall()
+    uid = result[0][0] if result else None
+    return uid
+
+def get_uid_prep(request):
+    user_id_in = request.GET.get('user_id',None)
+    user_id = int(user_id_in) if user_id_in else None
+    username = request.GET.get('username',None)
+    resource_id_in = request.GET.get('resource_id',None)
+    resource_id = int(resource_id_in) if resource_id_in else None
+    resource_name = request.GET.get('resource_name',None)
+    resource_type = request.GET.get('resource_type',None)
+    uid = get_uid(user_id=user_id,username=username,resource_id=resource_id,resource_name=resource_name,resource_type=resource_type)
+    return HttpResponse(
+        content = json.dumps({'uid': uid}),
+        status = 200,
+        content_type = "application/json"
+    )
+
+def getFolderSize(folder):
+    total_size = 0
+    for item in os.listdir(folder):
+        itempath = os.path.join(folder, item)
+        if os.path.isfile(itempath):
+            total_size += os.path.getsize(itempath)
+        elif os.path.isdir(itempath):
+            total_size += getFolderSize(itempath)
+    return total_size
+
+def get_resource_size(uid,show_resources=0):
+    try:
+        ogc_server_settings = OGC_Servers_Handler(settings.OGC_SERVER)['default']
+        db = ogc_server_settings.datastore_db
+        db_name = os.environ['GEONODE_GEODATABASE']
+        user = db['USER']
+        password = db['PASSWORD']
+        host = os.environ['DATABASE_HOST']
+        port = os.environ['DATABASE_PORT']
+        conn = None
+
+        conn = psycopg2.connect(dbname=db_name, user=user, host=host, port=port, password=password)
+        cur = conn.cursor()
+
+        cursor = connection.cursor()
+        cursor.execute(f"""SELECT people.id user_id, people.username, resource.id resource_id, resource.title resource_title, resource.resource_type, resource.alternate, upload.upload_dir, resource.blob, resource.files
+            FROM people_profile people
+            LEFT JOIN base_resourcebase resource ON resource.owner_id = people.id
+            LEFT JOIN upload_upload upload ON upload.resource_id = resource.id
+            LEFT JOIN public.socialaccount_socialaccount social ON people.id = social.user_id
+            WHERE resource.state = 'PROCESSED' AND social.uid = '{uid}';""")
+        upload_result = cursor.fetchall()
+        result_detail = []
+        original_size = 0
+        database_size = 0
+        for row in range(len(upload_result)):
+            if upload_result[row][4] == 'dataset':
+                if upload_result[row][6]:
+                    dataset_original_size = round(getFolderSize(upload_result[row][6])/1024.0,2)
+                else:
+                    dataset_original_size = 0
+                geoserver_table = upload_result[row][5].split(':')[1]
+                cur.execute(f"SELECT pg_total_relation_size('\"{geoserver_table}\"')")
+                dataset_db_size = round(cur.fetchall()[0][0]/1024.0,2)
+                dataset_url = os.environ['SITEURL'] + 'catalogue/#/dataset/' + str(upload_result[row][2])
+                result_detail.append(
+                    {
+                    'name': upload_result[row][3],
+                    'type': upload_result[row][4],
+                    'size': {
+                        'original_file': dataset_original_size,
+                        'database': dataset_db_size,
+                        'net': dataset_original_size + dataset_db_size
+                    },
+                    'url': dataset_url
+                    }
+                )
+                original_size += dataset_original_size
+                database_size += dataset_db_size
+            elif upload_result[row][4] == 'document':
+                path = json.loads(upload_result[row][8])
+                document_original_size = round(os.path.getsize(path[0])/1024.0,2)
+                document_db_size = 0
+                document_url = os.environ['SITEURL'] + 'catalogue/#/document/' + str(upload_result[row][2])
+                result_detail.append(
+                    {
+                    'name': upload_result[row][3],
+                    'type': upload_result[row][4],
+                    'size': {
+                        'original_file': document_original_size,
+                        'database': document_db_size,
+                        'net': document_original_size + document_db_size
+                    },
+                    'url': document_url
+                    }
+                )
+                original_size += document_original_size
+                database_size += document_db_size
+            else:
+                resource_original_size = round(sys.getsizeof(json.dumps(upload_result[row][7]))/1024.0,2)
+                resource_db_size = 0
+                resource_url = os.environ['SITEURL'] + 'catalogue/#/' + upload_result[row][4] + '/' + str(upload_result[row][2])
+                result_detail.append(
+                    {
+                    'name': upload_result[row][3],
+                    'type': upload_result[row][4],
+                    'size': {
+                        'original_file': resource_original_size,
+                        'database': resource_db_size,
+                        'net': resource_original_size + resource_db_size
+                    },
+                    'url': resource_url
+                    }
+                )
+                original_size += resource_original_size
+                database_size += resource_db_size
+    except Exception as e:
+        return json.dumps({'error': str(e)})
+    finally:
+        if conn:
+            conn.close()
+    
+    if len(upload_result) == 0:
+        user_id = None
+        username = None
+    else:
+        user_id = upload_result[0][0]
+        username = upload_result[0][1]
+    
+    total_size = {
+        'original_file': round(original_size,2),
+        'database': round(database_size,2),
+        'net': round(original_size + database_size,2)
+    }
+
+    if show_resources == 1:
+        response_json = json.dumps({
+            'id': user_id,
+            'user': username,
+            'total_size': total_size,
+            'resources': result_detail
+        })
+    else:
+        response_json = json.dumps({
+            'id': user_id,
+            'user': username,
+            'total_size': total_size,
+        })
+
+    return response_json
+
+def get_resource_size_prep(request):
+    uid = request.GET.get('uid',None)
+    show_resources = int(request.GET.get('show_resources',0))
+    response_json = get_resource_size(uid,show_resources)
+
+    return HttpResponse(
+        content = response_json,
+        status = 200,
+        content_type = "application/json"
+    )
+
+def get_userStorage(uid):
+    client = requests.session()
+    response = client.get(
+        url = "https://thaimap-backend.longdo.com/api/userStorage?keycloak_id=" + uid
+    )
+    response_dict = response.content
+    resp_obj = json.loads(response_dict)
+    return resp_obj['storageLimit']
+
+def check_limit_size(uid,file_size=0,resource_type=None):
+    resource_size_net = json.loads(get_resource_size(uid,1))['total_size']['net']
+    if resource_type == 'dataset':
+        total_size = resource_size_net + (file_size*4)
+    else:
+        total_size = resource_size_net + file_size
+    size_limit = get_userStorage(uid)
+    if total_size <= size_limit:
+        return True
+    else:
+        return False
+
+def check_limit_storage_prep(request):
+    uid = request.GET.get('uid',None)
+    file_size = float(request.GET.get('file_size',0))
+    resource_type = request.GET.get('resource_type',None)
+    response = check_limit_size(uid,file_size,resource_type)
+    return HttpResponse(
+        content = response,
+        status = 200
+    )
+
+def update_userStorage(uid,storageUsage):
+    client = requests.session()
+    response = client.put(
+        url = "https://thaimap-backend.longdo.com/api/userStorage",
+        json = {
+            'storageUsage': storageUsage,
+            'keycloakId': uid
+        }
+    )
+    if response.status_code == 200:
+        return True
+    else:
+        return False

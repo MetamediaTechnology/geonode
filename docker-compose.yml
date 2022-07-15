@@ -8,7 +8,7 @@ x-common-django:
   env_file:
     - .env
   volumes:
-    # - '.:/usr/src/geonode'
+    - .:/usr/src/geonode:consistent
     - statics:/mnt/volumes/statics
     - geoserver-data-dir:/geoserver_data/data
     - backup-restore:/backup_restore
@@ -61,7 +61,7 @@ services:
       - RESOLVER=127.0.0.11
     ports:
       - "${HTTP_PORT}:80"
-      - "${HTTPS_PORT}:443"
+#      - "${HTTPS_PORT}:443"
     volumes:
       - nginx-confd:/etc/nginx
       - nginx-certificates:/geonode-certificates
@@ -122,8 +122,8 @@ services:
       - dbbackups:/pg_backups
     restart: on-failure
     # uncomment to enable remote connections to postgres
-    #ports:
-    #  - "5432:5432"
+    ports:
+      - "5432:5432"
 
   # Vanilla RabbitMQ service. This is needed by celery
   rabbitmq:

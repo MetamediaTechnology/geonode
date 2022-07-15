@@ -68,6 +68,13 @@ from .forms import (
     DocumentReplaceForm
 )
 
+from geonode.views import (
+    get_resource_size,
+    get_uid,
+    check_limit_size,
+    update_userStorage
+)
+
 logger = logging.getLogger("geonode.documents.views")
 
 ALLOWED_DOC_TYPES = settings.ALLOWED_DOCUMENT_TYPES
@@ -186,6 +193,18 @@ class DocumentUploadView(CreateView):
         doc_form = form.cleaned_data
 
         file = doc_form.pop('doc_file', None)
+
+        file_size = file.size/1024.0
+        username = self.request.user
+        uid = get_uid(username=username)
+        is_able_upload = check_limit_size(uid,file_size)
+        if not is_able_upload:
+            return HttpResponse(
+                content = json.dumps({'error':'Storage usage exceed limit.'}),
+                status = 400,
+                content_type = "application/json"
+            )
+
         if file:
             tempdir = mkdtemp()
             dirname = os.path.basename(tempdir)
@@ -253,6 +272,9 @@ class DocumentUploadView(CreateView):
         resource_manager.set_thumbnail(self.object.uuid, instance=self.object, overwrite=False)
 
         register_event(self.request, EventType.EVENT_UPLOAD, self.object)
+
+        size_after_upload = json.loads(get_resource_size(uid,1))['total_size']['net']
+        update_userStorage(uid,size_after_upload)
 
         if self.request.GET.get('no__redirect', False):
             out['success'] = True
