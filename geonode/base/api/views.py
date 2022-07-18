@@ -66,8 +66,9 @@ from geonode.thumbs.thumbnails import create_thumbnail
 from geonode.thumbs.utils import _decode_base64, BASE64_PATTERN
 from geonode.groups.conf import settings as groups_settings
 from geonode.base.models import HierarchicalKeyword, Region, ResourceBase, TopicCategory, ThesaurusKeyword
-from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter, FavoriteFilter
+from geonode.base.api.filters import DynamicSearchFilter, ExtentFilter, FacetVisibleResourceFilter, FavoriteFilter
 from geonode.groups.models import GroupProfile, GroupMember
+from geonode.people.utils import get_available_users
 from geonode.security.permissions import (
     PermSpec,
     PermSpecCompact,
@@ -117,11 +118,10 @@ class UserViewSet(DynamicModelViewSet):
     API endpoint that allows users to be viewed or edited.
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    permission_classes = [IsSelfOrAdminOrReadOnly, ]
+    permission_classes = [IsAuthenticated, IsSelfOrAdminOrReadOnly, ]
     filter_backends = [
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter
     ]
-    queryset = get_user_model().objects.all()
     serializer_class = UserSerializer
     pagination_class = GeoNodeApiPagination
 
@@ -129,7 +129,11 @@ class UserViewSet(DynamicModelViewSet):
         """
         Filters and sorts users.
         """
-        queryset = get_user_model().objects.all()
+        if self.request and self.request.user:
+            queryset = get_available_users(self.request.user)
+        else:
+            queryset = get_user_model().objects.all()
+
         # Set up eager loading to avoid N+1 selects
         queryset = self.get_serializer_class().setup_eager_loading(queryset)
         return queryset.order_by("username")
@@ -214,7 +218,7 @@ class RegionViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveModelMixin,
     """
     permission_classes = [AllowAny, ]
     filter_backends = [
-        DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter
+        DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter, FacetVisibleResourceFilter
     ]
     queryset = Region.objects.all()
     serializer_class = RegionSerializer
@@ -266,7 +270,7 @@ class TopicCategoryViewSet(WithDynamicViewSetMixin, ListModelMixin, RetrieveMode
     """
     permission_classes = [AllowAny, ]
     filter_backends = [
-        DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter
+        DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter, FacetVisibleResourceFilter
     ]
     queryset = TopicCategory.objects.all()
     serializer_class = TopicCategorySerializer
@@ -537,29 +541,25 @@ class ResourceBaseViewSet(DynamicModelViewSet):
         curl -v -X DELETE -u admin:admin -H "Content-Type: application/json" http://localhost:8000/api/v2/resources/<id>/permissions
 
         - Changes the owner of a Resource:
-        curl -v -X PUT -u admin:admin -H "Content-Type: application/json" -d 'owner=afabiani' http://localhost:8000/api/v2/resources/<id>/permissions
+            curl -u admin:admin --location --request PUT 'http://localhost:8000/api/v2/resources/<id>/permissions' \
+                --header 'Content-Type: application/json' \
+                --data-raw '{"groups": [],"organizations": [],"users": [{"id": 1001,"permissions": "owner"}]}'
 
         - Assigns View permissions to some users:
-        curl -v -X PUT -u admin:admin -H "Content-Type: application/json" -d 'permissions={"users": {"admin": ["view_resourcebase"]}, "groups": {}}'
-            http://localhost:8000/api/v2/resources/<id>/permissions
-
-        curl -v -X PUT -u admin:admin -H "Content-Type: application/json" -d 'owner=afabiani' -d 'permissions={"users": {"admin": ["view_resourcebase"]}, "groups": {}}'
-            http://localhost:8000/api/v2/resources/<id>/permissions
+            curl -u admin:admin --location --request PUT 'http://localhost:8000/api/v2/resources/<id>/permissions' \
+                --header 'Content-Type: application/json' \
+                --data-raw '{"groups": [],"organizations": [],"users": [{"id": 1000,"permissions": "view"}]}'
 
         - Assigns View permissions to anyone:
-        curl -v -X PUT -u admin:admin -H "Content-Type: application/json" -d 'permissions={"users": {"AnonymousUser": ["view_resourcebase"]}, "groups": []}'
-            http://localhost:8000/api/v2/resources/<id>/permissions
+            curl -u admin:admin --location --request PUT 'http://localhost:8000/api/v2/resources/<id>/permissions' \
+                --header 'Content-Type: application/json' \
+                --data-raw '{"groups": [],"organizations": [],"users": [{"id": -1,"permissions": "view"}]}'
 
-        - Assigns View permissions to anyone and edit (style and data) permissions to a Group on a Dataset:
-        curl -v -X PUT -u admin:admin -H "Content-Type: application/json"
-            -d 'permissions={"users": {"AnonymousUser": ["view_resourcebase"]},
-            "groups": {"registered-members": ["view_resourcebase", "download_resourcebase", "change_dataset_style", "change_dataset_data"]}}'
-            http://localhost:8000/api/v2/resources/<id>/permissions
+        - Assigns View permissions to anyone and edit permissions to a Group on a Dataset:
+            curl -u admin:admin --location --request PUT 'http://localhost:8000/api/v2/resources/<id>/permissions' \
+                --header 'Content-Type: application/json' \
+                --data-raw '{"groups": [{"id": 1,"permissions": "manage"}],"organizations": [],"users": [{"id": -1,"permissions": "view"}]}'
 
-        - Assigns View permissions to anyone and edit permissions to a Group on a Document:
-        curl -v -X PUT -u admin:admin -H "Content-Type: application/json"
-            -d 'permissions={"users": {"AnonymousUser": ["view_resourcebase"]}, "groups": {"registered-members": ["view_resourcebase", "download_resourcebase", "change_resourcebase"]}}'
-            http://localhost:8000/api/v2/resources/<id>/permissions
         """
         config = Configuration.load()
         resource = self.get_object()
@@ -569,8 +569,7 @@ class ResourceBaseViewSet(DynamicModelViewSet):
             return Response(status=status.HTTP_403_FORBIDDEN)
         try:
             perms_spec = PermSpec(resource.get_all_level_info(), resource)
-            request_body = request.body
-            request_params = QueryDict(request_body, mutable=True, encoding="UTF-8")
+            request_params = request.data
             if request.method == 'GET':
                 return Response(perms_spec.compact)
             elif request.method == 'DELETE':
@@ -583,8 +582,7 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                     }
                 )
             elif request.method == 'PUT':
-                perms_spec_compact = PermSpecCompact(
-                    json.loads(request_params.get('permissions', '{}')), resource)
+                perms_spec_compact = PermSpecCompact(request.data, resource)
                 _exec_request = ExecutionRequest.objects.create(
                     user=request.user,
                     func_name='set_permissions',
@@ -597,8 +595,7 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                     }
                 )
             elif request.method == 'PATCH':
-                perms_spec_compact_patch = PermSpecCompact(
-                    json.loads(request_params.get('permissions', '{}')), resource)
+                perms_spec_compact_patch = PermSpecCompact(request.data, resource)
                 perms_spec_compact_resource = PermSpecCompact(perms_spec.compact, resource)
                 perms_spec_compact_resource.merge(perms_spec_compact_patch)
                 _exec_request = ExecutionRequest.objects.create(
@@ -746,7 +743,8 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                 or not request.user.has_perm('base.add_resourcebase'):
             return Response(status=status.HTTP_403_FORBIDDEN)
         try:
-            request_params = QueryDict(request.body, mutable=True)
+
+            request_params = self._get_request_params(request)
             uuid = request_params.get('uuid', str(uuid4()))
             resource_filter = ResourceBase.objects.filter(uuid=uuid)
             _exec_request = ExecutionRequest.objects.create(
@@ -842,7 +840,7 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                 or not request.user.has_perm('base.add_resourcebase'):
             return Response(status=status.HTTP_403_FORBIDDEN)
         try:
-            request_params = QueryDict(request.body, mutable=True)
+            request_params = self._get_request_params(request)
             uuid = request_params.get('uuid', str(uuid4()))
             resource_filter = ResourceBase.objects.filter(uuid=uuid)
 
@@ -1034,7 +1032,7 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                 resource is None or not request.user.has_perm('change_resourcebase', resource.get_self_resource()):
             return Response(status=status.HTTP_403_FORBIDDEN)
         try:
-            request_params = QueryDict(request.body, mutable=True)
+            request_params = self._get_request_params(request=request)
             _exec_request = ExecutionRequest.objects.create(
                 user=request.user,
                 func_name='update',
@@ -1134,7 +1132,7 @@ class ResourceBaseViewSet(DynamicModelViewSet):
         if not resource.is_copyable:
             return Response({"message": "Resource can not be cloned."}, status=400)
         try:
-            request_params = QueryDict(request.body, mutable=True)
+            request_params = self._get_request_params(request)
             _exec_request = ExecutionRequest.objects.create(
                 user=request.user,
                 func_name='copy',
@@ -1263,18 +1261,18 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                     resource.save()
                     return Response({"thumbnail_url": resource.thumbnail_url})
                 except Exception:
-                    raise ValidationError('file is either a file upload, ASCII byte string or a valid image url string')
+                    raise ValidationError(detail='file is either a file upload, ASCII byte string or a valid image url string')
         else:
             # Validate size
             if file_data.size > 1000000:
-                raise ValidationError('File must not exceed 1MB')
+                raise ValidationError(detail='File must not exceed 1MB')
 
             thumbnail = file_data.read()
             try:
                 file_data.seek(0)
                 Image.open(file_data)
             except Exception:
-                raise ValidationError('Invalid data provided')
+                raise ValidationError(detail='Invalid data provided')
         if thumbnail:
             resource_manager.set_thumbnail(resource.uuid, instance=resource, thumbnail=thumbnail)
             return Response({"thumbnail_url": resource.thumbnail_url})
@@ -1363,3 +1361,15 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                 _obj.metadata.add(new_m)
             _obj.refresh_from_db()
             return Response(ExtraMetadataSerializer().to_representation(_obj.metadata.all()), status=201)
+
+    def _get_request_params(self, request, encode=False):
+        try:
+            return QueryDict(request.body, mutable=True, encoding="UTF-8") if encode else QueryDict(request.body, mutable=True)
+        except Exception as e:
+            '''
+            The request with the barer token access to the request.data during the token verification
+            so in this case if the request.body cannot not access, we just re-access to the
+            request.data to get the params needed
+            '''
+            logger.debug(e)
+            return request.data

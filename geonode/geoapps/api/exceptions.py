@@ -1,6 +1,6 @@
 #########################################################################
 #
-# Copyright (C) 2016 OSGeo
+# Copyright (C) 2022 OSGeo
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,27 +16,25 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-
-import os
-
-__version__ = (4, 0, 0, 'rc', 1)
+from rest_framework.exceptions import APIException
 
 
-default_app_config = "geonode.apps.AppConfig"
+class DuplicateGeoAppException(APIException):
+    status_code = 409
+    default_detail = "GeoApp already exists"
+    default_code = "geoapp_exception"
+    category = "geoapp_api"
 
 
-def get_version():
-    import geonode.version
-    return geonode.version.get_version(__version__)
+class InvalidGeoAppException(APIException):
+    status_code = 400
+    default_detail = "The provided data is not valid"
+    default_code = "geoapp_exception"
+    category = "geoapp_api"
 
 
-def main(global_settings, **settings):
-    from django.core.wsgi import get_wsgi_application
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings.get('django_settings'))
-    app = get_wsgi_application()
-    return app
-
-
-class GeoNodeException(Exception):
-    """Base class for exceptions in this module."""
-    pass
+class GeneralGeoAppException(APIException):
+    status_code = 500
+    default_detail = "An error has occurred while processing your request"
+    default_code = "geoapp_exception"
+    category = "geoapp_api"

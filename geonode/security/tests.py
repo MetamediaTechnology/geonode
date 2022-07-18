@@ -16,12 +16,15 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
+
+import os
 import json
 import base64
 import logging
 import requests
 import importlib
 
+from gisdata import GOOD_DATA
 from requests.auth import HTTPBasicAuth
 from tastypie.test import ResourceTestCaseMixin
 
@@ -32,6 +35,7 @@ from django.http import HttpRequest
 from django.test.testcases import TestCase
 from django.contrib.auth import get_user_model
 from django.test.utils import override_settings
+from django.contrib.auth.models import AnonymousUser
 
 from guardian.shortcuts import (
     assign_perm,
@@ -45,9 +49,9 @@ from geonode.compat import ensure_string
 from geonode.utils import check_ogc_backend
 from geonode.tests.utils import check_dataset
 from geonode.decorators import on_ogc_backend
-from geonode.geoserver.helpers import gs_slurp
 from geonode.resource.manager import resource_manager
 from geonode.tests.base import GeoNodeBaseTestSupport
+from geonode.upload.tests.utils import rest_upload_by_path
 from geonode.groups.models import Group, GroupMember, GroupProfile
 from geonode.layers.populate_datasets_data import create_dataset_data
 
@@ -258,7 +262,7 @@ class SecurityTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
 
                 # unauthorized request to black listed URL should be redirected to `redirect_to` URL
                 request = HttpRequest()
-                request.user = get_anonymous_user()
+                request.user = AnonymousUser()
                 request.path = black_listed_url
 
                 response = middleware.process_request(request)
@@ -779,34 +783,19 @@ class SecurityTests(ResourceTestCaseMixin, GeoNodeBaseTestSupport):
             ))
 
         # Test that layer owner can wipe GWC Cache
-        ignore_errors = True
-        skip_unadvertised = False
-        skip_geonode_registered = False
-        remove_deleted = True
-        verbosity = 2
-        owner = bobby
         workspace = 'geonode'
-        filter = None
         store = None
         permissions = {
             'users': {"bobby": ['view_resourcebase', 'change_dataset_data']},
             'groups': {anonymous_group: ['view_resourcebase']},
         }
-        gs_slurp(
-            ignore_errors=ignore_errors,
-            verbosity=verbosity,
-            owner=owner,
-            workspace=workspace,
-            store=store,
-            filter=filter,
-            skip_unadvertised=skip_unadvertised,
-            skip_geonode_registered=skip_geonode_registered,
-            remove_deleted=remove_deleted,
-            permissions=permissions,
-            execute_signals=True)
+        fname = os.path.join(GOOD_DATA, 'time', 'boxes_with_date.shp')
+        resp, data = rest_upload_by_path(fname, self.client, non_interactive=True)
+        self.assertEqual(resp.status_code, 200)
 
         saved_dataset = Dataset.objects.get(name='boxes_with_date.shp')
         check_dataset(saved_dataset)
+        resource_manager.set_permissions(saved_dataset.uuid, instance=saved_dataset, permissions=permissions)
 
         from lxml import etree
         from owslib.etree import etree as dlxml
@@ -2258,7 +2247,6 @@ class SetPermissionsTestCase(GeoNodeBaseTestSupport):
                 {"users": {}, "groups": {}},
                 {
                     self.author: [
-                        "delete_resourcebase",
                         "download_resourcebase",
                         "view_resourcebase",
                     ],
@@ -2280,7 +2268,6 @@ class SetPermissionsTestCase(GeoNodeBaseTestSupport):
                 {"users": {}, "groups": {"second_custom_group": ["view_resourcebase"]}},
                 {
                     self.author: [
-                        "delete_resourcebase",
                         "download_resourcebase",
                         "view_resourcebase",
                     ],
@@ -2380,7 +2367,6 @@ class SetPermissionsTestCase(GeoNodeBaseTestSupport):
             .first()
         expected = {
             self.author: [
-                "delete_resourcebase",
                 "download_resourcebase",
                 "view_resourcebase",
             ],
@@ -2437,7 +2423,6 @@ class SetPermissionsTestCase(GeoNodeBaseTestSupport):
         self.assertEqual(sut.role, "member")
         expected = {
             self.author: [
-                "delete_resourcebase",
                 "download_resourcebase",
                 "view_resourcebase",
             ],
@@ -2558,7 +2543,6 @@ class TestPermissionChanges(GeoNodeBaseTestSupport):
             group=self.resource_group.group)
 
         self.owner_perms = [
-            'delete_resourcebase',
             'view_resourcebase',
             'download_resourcebase'
         ]
@@ -2567,7 +2551,7 @@ class TestPermissionChanges(GeoNodeBaseTestSupport):
             'change_resourcebase_metadata'
         ]
         self.dataset_perms = ["change_dataset_style", "change_dataset_data"]
-        self.adv_owner_limit = ["change_resourcebase_permissions", "publish_resourcebase"]
+        self.adv_owner_limit = ["delete_resourcebase", "change_resourcebase_permissions", "publish_resourcebase"]
         self.safe_perms = ["download_resourcebase", "view_resourcebase"]
         self.data = {
             'resource-title': self.resource.title,

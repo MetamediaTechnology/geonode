@@ -306,11 +306,6 @@ STATIC_ROOT = os.getenv('STATIC_ROOT',
 # ref: http://whitenoise.evans.io/en/stable/django.html#add-compression-and-caching-support
 CACHE_BUSTING_STATIC_ENABLED = ast.literal_eval(os.environ.get('CACHE_BUSTING_STATIC_ENABLED', 'False'))
 
-if not DEBUG and CACHE_BUSTING_STATIC_ENABLED:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-else:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-
 # Optionally Use a Content-Delivery Network
 # ref: http://whitenoise.evans.io/en/stable/django.html#use-a-content-delivery-network
 STATIC_HOST = os.environ.get('STATIC_URL', '')
@@ -380,6 +375,10 @@ CACHES = {
     }
 }
 
+# Whitenoise Settings - ref.: http://whitenoise.evans.io/en/stable/django.html
+WHITENOISE_MANIFEST_STRICT = ast.literal_eval(os.getenv('WHITENOISE_MANIFEST_STRICT', 'False'))
+COMPRESS_STATIC_FILES = ast.literal_eval(os.getenv('COMPRESS_STATIC_FILES', 'False'))
+
 MEMCACHED_ENABLED = ast.literal_eval(os.getenv('MEMCACHED_ENABLED', 'False'))
 MEMCACHED_BACKEND = os.getenv('MEMCACHED_BACKEND', 'django.core.cache.backends.memcached.PyMemcacheCache')
 MEMCACHED_LOCATION = os.getenv('MEMCACHED_LOCATION', '127.0.0.1:11211')
@@ -391,6 +390,14 @@ if MEMCACHED_ENABLED:
         'BACKEND': MEMCACHED_BACKEND,
         'LOCATION': MEMCACHED_LOCATION,
     }
+
+# Define the STATICFILES_STORAGE accordingly
+if not DEBUG and CACHE_BUSTING_STATIC_ENABLED:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+elif COMPRESS_STATIC_FILES:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+else:
+    STATICFILES_STORAGE = 'whitenoise.storage.StaticFilesStorage'
 
 GEONODE_CORE_APPS = (
     # GeoNode internal apps
@@ -463,6 +470,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.sitemaps',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django.contrib.messages',
     'django.contrib.humanize',
@@ -763,7 +771,7 @@ MIDDLEWARE = (
     'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
     'geonode.base.middleware.MaintenanceMiddleware',
-    'geonode.base.middleware.ReadOnlyMiddleware',   # a Middleware enabling Read Only mode of Geonode
+    'geonode.base.middleware.ReadOnlyMiddleware'  # a Middleware enabling Read Only mode of Geonode
 )
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
@@ -858,7 +866,6 @@ LOCKDOWN_GEONODE = ast.literal_eval(os.getenv('LOCKDOWN_GEONODE', 'False'))
 # authentication.
 # - authorized exempt urls needed for oauth when GeoNode is set to lockdown
 AUTH_EXEMPT_URLS = (
-    r'^%s/?$' % FORCE_SCRIPT_NAME,
     f'{FORCE_SCRIPT_NAME}/o/*',
     f'{FORCE_SCRIPT_NAME}/gs/*',
     f'{FORCE_SCRIPT_NAME}/account/*',
@@ -1584,6 +1591,8 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
     # Extensions path to use in importing custom extensions into geonode
     MAPSTORE_EXTENSIONS_FOLDER_PATH = '/static/mapstore/extensions/'
 
+    # Supported Dataset file types for uploading Datasets. This setting is being from from the client
+
 # -- END Client Hooksets Setup
 
 SERVICE_UPDATE_INTERVAL = 0
@@ -1840,6 +1849,11 @@ if NOTIFICATIONS_MODULE and NOTIFICATIONS_MODULE not in INSTALLED_APPS:
 # ########################################################################### #
 # SECURITY SETTINGS
 # ########################################################################### #
+
+ENABLE_APIKEY_LOGIN = ast.literal_eval(os.getenv('ENABLE_APIKEY_LOGIN', 'False'))
+
+if ENABLE_APIKEY_LOGIN:
+    MIDDLEWARE += ('geonode.security.middleware.LoginFromApiKeyMiddleware',)
 
 # Require users to authenticate before using Geonode
 if LOCKDOWN_GEONODE:
@@ -2140,3 +2154,62 @@ EXTRA_METADATA_SCHEMA = {**{
     "document": os.getenv('DOCUMENT_EXTRA_METADATA_SCHEMA', DEFAULT_EXTRA_METADATA_SCHEMA),
     "geoapp": os.getenv('GEOAPP_EXTRA_METADATA_SCHEMA', DEFAULT_EXTRA_METADATA_SCHEMA)
 }, **CUSTOM_METADATA_SCHEMA}
+
+
+'''
+Define the URLs patterns used by the SizeRestrictedFileUploadHandler
+to evaluate if the file is greater than the limit size defined
+'''
+
+SIZE_RESTRICTED_FILE_UPLOAD_ELEGIBLE_URL_NAMES = ("data_upload", "uploads-upload", "document_upload",)
+
+SUPPORTED_DATASET_FILE_TYPES = [
+        {
+            "id": "shp",
+            "label": "ESRI Shapefile",
+            "format": "vector",
+            "ext": ["shp"],
+            "requires": ["shp", "prj", "dbf", "shx"],
+            "optional": ["xml", "sld"]
+        },
+        {
+            "id": "tiff",
+            "label": "GeoTIFF",
+            "format": "raster",
+            "ext": ["tiff", "tif"],
+            "mimeType": ["image/tiff"],
+            "optional": ["xml", "sld"]
+        },
+        {
+            "id": "csv",
+            "label": "Comma Separated Value (CSV)",
+            "format": "vector",
+            "ext": ["csv"],
+            "mimeType": ["text/csv"],
+            "optional": ["xml", "sld"]
+        },
+        {
+            "id": "zip",
+            "label": "Zip Archive",
+            "format": "archive",
+            "ext": ["zip"],
+            "mimeType": ["application/zip"],
+            "optional": ["xml", "sld"]
+        },
+        {
+            "id": "xml",
+            "label": "XML Metadata File",
+            "format": "metadata",
+            "ext": ["xml"],
+            "mimeType": ["application/json"],
+            "needsFiles": ["shp", "prj", "dbf", "shx", "csv", "tiff", "zip", "sld"]
+        },
+        {
+            "id": "sld",
+            "label": "Styled Layer Descriptor (SLD)",
+            "format": "metadata",
+            "ext": ["sld"],
+            "mimeType": ["application/json"],
+            "needsFiles": ["shp", "prj", "dbf", "shx", "csv", "tiff", "zip", "xml"]
+        }
+    ]

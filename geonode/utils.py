@@ -44,6 +44,7 @@ from decimal import Decimal
 from threading import local
 from slugify import slugify
 from contextlib import closing
+from requests.exceptions import RetryError
 from collections import namedtuple, defaultdict
 from rest_framework.exceptions import APIException
 from math import atan, exp, log, pi, sin, tan, floor
@@ -1196,7 +1197,7 @@ class HttpClient:
                     timeout=_req_tout,
                     stream=stream,
                     verify=verify)
-            except (requests.exceptions.RequestException, ValueError) as e:
+            except (requests.exceptions.RequestException, ValueError, RetryError) as e:
                 msg = f"Request exception [{e}] - TOUT [{_req_tout}] to URL: {url} - headers: {headers}"
                 logger.exception(Exception(msg))
                 response = None
@@ -1875,3 +1876,26 @@ def get_xpath_value(
 def get_geonode_app_types():
     from geonode.geoapps.models import GeoApp
     return list(set(GeoApp.objects.values_list('resource_type', flat=True)))
+
+
+def get_supported_datasets_file_types():
+    from django.conf import settings as gn_settings
+    '''
+    Return a list of all supported file type in geonode
+    If one of the type provided in the custom type exists in the default
+    is going to override it
+    '''
+    default_types = settings.SUPPORTED_DATASET_FILE_TYPES
+    types_module = (
+        gn_settings.ADDITIONAL_DATASET_FILE_TYPES
+        if hasattr(gn_settings, "ADDITIONAL_DATASET_FILE_TYPES")
+        else []
+    )
+    supported_types = default_types.copy()
+    default_types_id = [t.get('id') for t in default_types]
+    for _type in types_module:
+        if _type.get("id") in default_types_id:
+            supported_types[default_types_id.index(_type.get("id"))] = _type
+        else:
+            supported_types.extend([_type])
+    return supported_types
