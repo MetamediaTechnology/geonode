@@ -195,15 +195,17 @@ class DocumentUploadView(CreateView):
         file = doc_form.pop('doc_file', None)
 
         file_size = file.size/1024.0
-        username = self.request.user
-        uid = get_uid(username=username)
-        is_able_upload = check_limit_size(uid,file_size)
-        if not is_able_upload:
-            return HttpResponse(
-                content = json.dumps({'error':'Storage usage exceed limit.'}),
-                status = 400,
-                content_type = "application/json"
-            )
+
+        if not self.request.user.is_staff:
+            username = self.request.user
+            uid = get_uid(username=username)
+            is_able_upload = check_limit_size(uid,file_size)
+            if not is_able_upload:
+                return HttpResponse(
+                    content = json.dumps({'error':'Storage usage exceed limit.'}),
+                    status = 400,
+                    content_type = "application/json"
+                )
 
         if file:
             tempdir = mkdtemp()
@@ -273,8 +275,9 @@ class DocumentUploadView(CreateView):
 
         register_event(self.request, EventType.EVENT_UPLOAD, self.object)
 
-        size_after_upload = json.loads(get_resource_size(uid,1))['total_size']['net']
-        update_userStorage(uid,size_after_upload)
+        if not self.request.user.is_staff:
+            size_after_upload = json.loads(get_resource_size(uid,1))['total_size']['net']
+            update_userStorage(uid,size_after_upload)
 
         if self.request.GET.get('no__redirect', False):
             out['success'] = True

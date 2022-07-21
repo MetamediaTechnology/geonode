@@ -108,9 +108,10 @@ class GeoAppSerializer(ResourceBaseSerializer):
             uid = get_uid(username=username)
         else:
             uid = get_uid(resource_id=instance.id)
-        is_able_upload = check_limit_size(uid,0)
-        if not is_able_upload:
-            raise ValidationError("Storage usage exceed limit.")
+        if uid:
+            is_able_upload = check_limit_size(uid,0)
+            if not is_able_upload:
+                raise ValidationError("Storage usage exceed limit.")
 
         # Create a new instance
         if not instance:
@@ -131,8 +132,9 @@ class GeoAppSerializer(ResourceBaseSerializer):
         validated_data['blob'] = _data
         
         update_result = resource_manager.update(_instance.uuid,instance=_instance,vals=validated_data,notify=True)
-        size_after_update = json.loads(get_resource_size(uid,1))['total_size']['net']
-        update_userStorage(uid,size_after_update)
+        if uid:
+            size_after_update = json.loads(get_resource_size(uid,1))['total_size']['net']
+            update_userStorage(uid,size_after_update)
 
         return update_result
 

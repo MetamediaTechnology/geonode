@@ -45,11 +45,13 @@ def dataset_create(request, template='createlayer/dataset_create.html'):
     if request.method == 'POST':
         form = NewDatasetForm(request.POST)
         if form.is_valid():
-            username = request.user
-            uid = get_uid(username=username)
-            is_able_upload = check_limit_size(uid,0)
+            if not request.user.is_staff:
+                username = request.user
+                uid = get_uid(username=username)
+                is_able_upload = check_limit_size(uid,0)
+            else:
+                is_able_upload = True
             if not is_able_upload:
-            #raise ValidationError("Storage usage exceed limit.")
                 error = 'Storage usage exceed limit.'
             else:
                 try:
@@ -62,8 +64,9 @@ def dataset_create(request, template='createlayer/dataset_create.html'):
                     layer = create_dataset(name, title, request.user.username, geometry_type, attributes)
                     layer.set_permissions(json.loads(permissions), created=True)
 
-                    size_after_update = json.loads(get_resource_size(uid,1))['total_size']['net']
-                    update_userStorage(uid,size_after_update)
+                    if not request.user.is_staff:
+                        size_after_update = json.loads(get_resource_size(uid,1))['total_size']['net']
+                        update_userStorage(uid,size_after_update)
 
                     return redirect(layer)
                 except Exception as e:

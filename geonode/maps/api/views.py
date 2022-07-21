@@ -51,6 +51,7 @@ from geonode.views import (
     update_userStorage,
 )
 import json
+from django.core.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -127,11 +128,12 @@ class MapViewSet(DynamicModelViewSet):
             uuid=str(uuid4()),
         )
 
-        username = self.request.user
-        uid = get_uid(username=username)
-        is_able_upload = check_limit_size(uid,0)
-        if not is_able_upload:
-            raise ValidationError("Storage usage exceed limit.")
+        if not self.request.user.is_staff:
+            username = self.request.user
+            uid = get_uid(username=username)
+            is_able_upload = check_limit_size(uid,0)
+            if not is_able_upload:
+                raise ValidationError("Storage usage exceed limit.")
 
         # events and resouce routines
         self._post_change_routines(
@@ -142,8 +144,9 @@ class MapViewSet(DynamicModelViewSet):
         # Handle thumbnail generation
         resource_manager.set_thumbnail(instance.uuid, instance=instance, overwrite=False)
 
-        size_after_update = json.loads(get_resource_size(uid,1))['total_size']['net']
-        update_userStorage(uid,size_after_update)
+        if not self.request.user.is_staff:
+            size_after_update = json.loads(get_resource_size(uid,1))['total_size']['net']
+            update_userStorage(uid,size_after_update)
 
     def perform_update(self, serializer):
         # Check instance permissions with resolve_object
@@ -164,9 +167,10 @@ class MapViewSet(DynamicModelViewSet):
         instance = serializer.save()
 
         uid = get_uid(resource_id=mapid)
-        is_able_upload = check_limit_size(uid,0)
-        if not is_able_upload:
-            raise ValidationError("Storage usage exceed limit.")
+        if uid:
+            is_able_upload = check_limit_size(uid,0)
+            if not is_able_upload:
+                raise ValidationError("Storage usage exceed limit.")
 
         # thumbnail, events and resouce routines
         self._post_change_routines(
@@ -175,8 +179,9 @@ class MapViewSet(DynamicModelViewSet):
             additional_data=post_change_data,
         )
 
-        size_after_update = json.loads(get_resource_size(uid,1))['total_size']['net']
-        update_userStorage(uid,size_after_update)
+        if uid:
+            size_after_update = json.loads(get_resource_size(uid,1))['total_size']['net']
+            update_userStorage(uid,size_after_update)
 
     def _post_change_routines(self, instance: Map, create_action_perfomed: bool, additional_data: dict):
         # Step 1: Handle Maplayers signals if this is and update action

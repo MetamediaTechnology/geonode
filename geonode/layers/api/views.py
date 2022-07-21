@@ -46,6 +46,13 @@ from .permissions import DatasetPermissionsFilter
 
 import logging
 
+from geonode.views import (
+    get_resource_size,
+    get_uid,
+    update_userStorage
+)
+import json
+
 logger = logging.getLogger(__name__)
 
 
@@ -70,6 +77,11 @@ class DatasetViewSet(DynamicModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return DatasetListSerializer
+        if not self.request.user.is_staff:
+            username = self.request.user
+            uid = get_uid(username=username)
+            size_after_upload = json.loads(get_resource_size(uid,1))['total_size']['net']
+            update_userStorage(uid,size_after_upload)
         return DatasetSerializer
 
     @extend_schema(
