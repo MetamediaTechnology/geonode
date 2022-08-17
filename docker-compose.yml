@@ -8,12 +8,14 @@ x-common-django:
   env_file:
     - .env
   volumes:
-    # - '.:/usr/src/geonode'
+    - '.:/usr/src/geonode'
     - statics:/mnt/volumes/statics
     - geoserver-data-dir:/geoserver_data/data
     - backup-restore:/backup_restore
     - data:/data
     - tmp:/tmp
+  networks:
+    - geonodelongdo-net
   depends_on:
     db:
       condition: service_healthy
@@ -65,13 +67,16 @@ services:
       - LETSENCRYPT_MODE=${LETSENCRYPT_MODE}
       - RESOLVER=127.0.0.11
     ports:
-      - "${HTTP_PORT}:80"
-      - "${HTTPS_PORT}:443"
+      # - "${HTTP_PORT}:80"
+      # - "${HTTPS_PORT}:443"
+      - "10.0.0.173:8000:80"
     volumes:
       - nginx-confd:/etc/nginx
       - nginx-certificates:/geonode-certificates
       - statics:/mnt/volumes/statics
     restart: on-failure
+    networks:
+      - geonodelongdo-net
 
   # Gets and installs letsencrypt certificates
   letsencrypt:
@@ -86,6 +91,8 @@ services:
     volumes:
       - nginx-certificates:/geonode-certificates
     restart: on-failure
+    networks:
+      - geonodelongdo-net
 
   # Geoserver backend
   geoserver:
@@ -106,6 +113,8 @@ services:
       - data:/data
       - tmp:/tmp
     restart: on-failure
+    networks:
+      - geonodelongdo-net
     depends_on:
       db:
         condition: service_healthy
@@ -119,6 +128,8 @@ services:
     volumes:
       - geoserver-data-dir:/geoserver_data/data
     restart: on-failure
+    networks:
+      - geonodelongdo-net
     healthcheck:
       test: "ls -A '/geoserver_data/data' | wc -l"
 
@@ -137,8 +148,11 @@ services:
     healthcheck:
       test: "pg_isready -d gis"
     # uncomment to enable remote connections to postgres
-    #ports:
+    ports:
     #  - "5432:5432"
+      - "10.0.0.173:10017:5432"
+    networks:
+      - geonodelongdo-net
 
   # Vanilla RabbitMQ service. This is needed by celery
   rabbitmq:
@@ -147,6 +161,8 @@ services:
     volumes:
       - rabbitmq:/var/lib/rabbitmq
     restart: on-failure
+    networks:
+      - geonodelongdo-net
 
 volumes:
   statics:
@@ -169,3 +185,6 @@ volumes:
     name: ${COMPOSE_PROJECT_NAME}-tmp
   rabbitmq:
     name: ${COMPOSE_PROJECT_NAME}-rabbitmq
+
+networks:
+  geonodelongdo-net:

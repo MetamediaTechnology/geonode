@@ -538,6 +538,11 @@ MARKDOWNIFY_STRIP = os.getenv('MARKDOWNIFY_STRIP', False)
 
 INSTALLED_APPS += GEONODE_APPS
 
+# Keycloak
+INSTALLED_APPS += (
+    'allauth.socialaccount.providers.keycloak', # changed
+)
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
@@ -1949,6 +1954,8 @@ SOCIALACCOUNT_WITH_GEONODE_LOCAL_SINGUP = strtobool(os.environ.get('SOCIALACCOUN
 #    'allauth.socialaccount.providers.facebook',
 # )
 
+SOCIALACCOUNT_LOGIN_ON_GET=True
+
 SOCIALACCOUNT_PROVIDERS = {
     'linkedin_oauth2': {
         'SCOPE': [
@@ -1982,6 +1989,10 @@ SOCIALACCOUNT_PROVIDERS = {
             'link',
             'gender',
         ]
+    },
+    'keycloak': {
+        'KEYCLOAK_URL': 'https://auth.longdo.com/auth',
+        'KEYCLOAK_REALM': 'Longdo'
     },
 }
 
