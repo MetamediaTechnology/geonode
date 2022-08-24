@@ -2245,7 +2245,7 @@ SUPPORTED_DATASET_FILE_TYPES = [
     {
         'id': 'geojson',
         'label': 'GeoJson',
-        'format': 'vector',
+        'format': 'metadata',
         'ext': ['json', 'geojson'],
         'optional': ['xml', 'sld']
     },
