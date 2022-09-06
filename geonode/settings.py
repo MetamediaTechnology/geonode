@@ -2186,92 +2186,92 @@ to evaluate if the file is greater than the limit size defined
 
 SIZE_RESTRICTED_FILE_UPLOAD_ELEGIBLE_URL_NAMES = ("data_upload", "uploads-upload", "document_upload",)
 
-SUPPORTED_DATASET_FILE_TYPES = [
-    {
-        "id": "shp",
-        "label": "ESRI Shapefile",
-        "format": "vector",
-        "ext": ["shp"],
-        "requires": ["shp", "prj", "dbf", "shx"],
-        "optional": ["xml", "sld"]
-    },
-    {
-        "id": "tiff",
-        "label": "GeoTIFF",
-        "format": "raster",
-        "ext": ["tiff", "tif"],
-        "mimeType": ["image/tiff"],
-        "optional": ["xml", "sld"]
-    },
-    {
-        "id": "csv",
-        "label": "Comma Separated Value (CSV)",
-        "format": "vector",
-        "ext": ["csv"],
-        "mimeType": ["text/csv"],
-        "optional": ["xml", "sld"]
-    },
-    {
-        "id": "zip",
-        "label": "Zip Archive",
-        "format": "archive",
-        "ext": ["zip"],
-        "mimeType": ["application/zip"],
-        "optional": ["xml", "sld"]
-    },
-    {
-        "id": "xml",
-        "label": "XML Metadata File",
-        "format": "metadata",
-        "ext": ["xml"],
-        "mimeType": ["application/json"],
-        "needsFiles": ["shp", "prj", "dbf", "shx", "csv", "tiff", "zip", "sld"]
-    },
-    {
-        "id": "sld",
-        "label": "Styled Layer Descriptor (SLD)",
-        "format": "metadata",
-        "ext": ["sld"],
-        "mimeType": ["application/json"],
-        "needsFiles": ["shp", "prj", "dbf", "shx", "csv", "tiff", "zip", "xml"]
-    },
-    {
-        'id': 'gpkg',
-        'label': 'GeoPackage',
-        'format': 'archive',
-        'ext': ['gpkg']
-    },
-    {
-        'id': 'geojson',
-        'label': 'GeoJson',
-        'format': 'metadata',
-        'ext': ['json', 'geojson'],
-        'optional': ['xml', 'sld']
-    },
-    {
-        'id': 'kml',
-        'label': 'KML',
-        'format': 'vector',
-        'ext': ['kml'],
-        'optional': ['xml', 'sld']
-    }
-]
+# SUPPORTED_DATASET_FILE_TYPES = [
+#     {
+#         "id": "shp",
+#         "label": "ESRI Shapefile",
+#         "format": "vector",
+#         "ext": ["shp"],
+#         "requires": ["shp", "prj", "dbf", "shx"],
+#         "optional": ["xml", "sld"]
+#     },
+#     {
+#         "id": "tiff",
+#         "label": "GeoTIFF",
+#         "format": "raster",
+#         "ext": ["tiff", "tif"],
+#         "mimeType": ["image/tiff"],
+#         "optional": ["xml", "sld"]
+#     },
+#     {
+#         "id": "csv",
+#         "label": "Comma Separated Value (CSV)",
+#         "format": "vector",
+#         "ext": ["csv"],
+#         "mimeType": ["text/csv"],
+#         "optional": ["xml", "sld"]
+#     },
+#     {
+#         "id": "zip",
+#         "label": "Zip Archive",
+#         "format": "archive",
+#         "ext": ["zip"],
+#         "mimeType": ["application/zip"],
+#         "optional": ["xml", "sld"]
+#     },
+#     {
+#         "id": "xml",
+#         "label": "XML Metadata File",
+#         "format": "metadata",
+#         "ext": ["xml"],
+#         "mimeType": ["application/json"],
+#         "needsFiles": ["shp", "prj", "dbf", "shx", "csv", "tiff", "zip", "sld"]
+#     },
+#     {
+#         "id": "sld",
+#         "label": "Styled Layer Descriptor (SLD)",
+#         "format": "metadata",
+#         "ext": ["sld"],
+#         "mimeType": ["application/json"],
+#         "needsFiles": ["shp", "prj", "dbf", "shx", "csv", "tiff", "zip", "xml"]
+#     },
+#     {
+#         'id': 'gpkg',
+#         'label': 'GeoPackage',
+#         'format': 'archive',
+#         'ext': ['gpkg']
+#     },
+#     {
+#         'id': 'geojson',
+#         'label': 'GeoJson',
+#         'format': 'metadata',
+#         'ext': ['json', 'geojson'],
+#         'optional': ['xml', 'sld']
+#     },
+#     {
+#         'id': 'kml',
+#         'label': 'KML',
+#         'format': 'vector',
+#         'ext': ['kml'],
+#         'optional': ['xml', 'sld']
+#     }
+# ]
 
-INSTALLED_APPS += ('dynamic_models', 'importer', 'importer.handlers',)
+# INSTALLED_APPS += ('dynamic_models', 'importer', 'importer.handlers',)
 
-CELERY_TASK_QUEUES += (
-    Queue('importer.import_orchestrator', GEONODE_EXCHANGE, routing_key='importer.import_orchestrator'),
-    Queue('importer.import_resource', GEONODE_EXCHANGE, routing_key='importer.import_resource', max_priority=8),
-    Queue('importer.publish_resource', GEONODE_EXCHANGE, routing_key='importer.publish_resource', max_priority=8),
-    Queue('importer.create_geonode_resource', GEONODE_EXCHANGE, routing_key='importer.create_geonode_resource', max_priority=8),
-    Queue('importer.import_with_ogr2ogr', GEONODE_EXCHANGE, routing_key='importer.import_with_ogr2ogr', max_priority=10),
-    Queue('importer.import_next_step', GEONODE_EXCHANGE, routing_key='importer.import_next_step', max_priority=3),
-    Queue('importer.create_dynamic_structure', GEONODE_EXCHANGE, routing_key='importer.create_dynamic_structure', max_priority=10),
-    Queue('importer.copy_geonode_resource', GEONODE_EXCHANGE, routing_key='importer.copy_geonode_resource', max_priority=0),
-    Queue('importer.copy_dynamic_model', GEONODE_EXCHANGE, routing_key='importer.copy_dynamic_model'),
-    Queue('importer.copy_geonode_data_table', GEONODE_EXCHANGE, routing_key='importer.copy_geonode_data_table'),
-)
+# CELERY_TASK_QUEUES += (
+#     Queue('importer.import_orchestrator', GEONODE_EXCHANGE, routing_key='importer.import_orchestrator'),
+#     Queue('importer.import_resource', GEONODE_EXCHANGE, routing_key='importer.import_resource', max_priority=8),
+#     Queue('importer.publish_resource', GEONODE_EXCHANGE, routing_key='importer.publish_resource', max_priority=8),
+#     Queue('importer.create_geonode_resource', GEONODE_EXCHANGE, routing_key='importer.create_geonode_resource', max_priority=8),
+#     Queue('importer.import_with_ogr2ogr', GEONODE_EXCHANGE, routing_key='importer.import_with_ogr2ogr', max_priority=10),
+#     Queue('importer.import_next_step', GEONODE_EXCHANGE, routing_key='importer.import_next_step', max_priority=3),
+#     Queue('importer.create_dynamic_structure', GEONODE_EXCHANGE, routing_key='importer.create_dynamic_structure', max_priority=10),
+#     Queue('importer.copy_geonode_resource', GEONODE_EXCHANGE, routing_key='importer.copy_geonode_resource', max_priority=0),
+#     Queue('importer.copy_dynamic_model', GEONODE_EXCHANGE, routing_key='importer.copy_dynamic_model'),
+#     Queue('importer.copy_geonode_data_table', GEONODE_EXCHANGE, routing_key='importer.copy_geonode_data_table'),
+# )
 
-DATABASE_ROUTERS = ["importer.db_router.DatastoreRouter"]
+# DATABASE_ROUTERS = ["importer.db_router.DatastoreRouter"]
 
-SIZE_RESTRICTED_FILE_UPLOAD_ELEGIBLE_URL_NAMES += ('importer_upload',)
+# SIZE_RESTRICTED_FILE_UPLOAD_ELEGIBLE_URL_NAMES += ('importer_upload',)
