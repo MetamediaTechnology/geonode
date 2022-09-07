@@ -1990,8 +1990,8 @@ SOCIALACCOUNT_PROVIDERS = {
         ]
     },
     'keycloak': {
-        'KEYCLOAK_URL': 'https://auth.longdo.com/auth',
-        'KEYCLOAK_REALM': 'Longdo'
+        'KEYCLOAK_URL': 'https://auth.sphere-dev.gistda.or.th/auth',
+        'KEYCLOAK_REALM': 'master'
     },
 }
 
