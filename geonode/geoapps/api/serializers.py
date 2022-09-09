@@ -25,6 +25,14 @@ from geonode.geoapps.models import GeoApp
 from geonode.resource.manager import resource_manager
 from geonode.base.api.serializers import ResourceBaseSerializer
 
+from geonode.views import (
+    get_resource_size,
+    get_uid,
+    check_limit_size,
+    update_userStorage,
+)
+import json
+
 logger = logging.getLogger(__name__)
 
 
@@ -94,6 +102,17 @@ class GeoAppSerializer(ResourceBaseSerializer):
         if 'blob' in validated_data:
             _data = validated_data.pop('blob')
 
+        if not instance:
+            request = self.context.get('request')
+            username = request.user
+            uid = get_uid(username=username)
+        else:
+            uid = get_uid(resource_id=instance.id)
+        if uid:
+            is_able_upload = check_limit_size(uid, 0)
+            if not is_able_upload:
+                raise ValidationError("Storage usage exceed limit.")
+
         # Create a new instance
         if not instance:
             _instance = resource_manager.create(
@@ -111,11 +130,18 @@ class GeoAppSerializer(ResourceBaseSerializer):
 
         # Let's finalize the instance and notify the users
         validated_data['blob'] = _data
-        return resource_manager.update(
+
+        update_result = resource_manager.update(
             _instance.uuid,
             instance=_instance,
             vals=validated_data,
             notify=True)
+
+        if uid:
+            size_after_update = json.loads(get_resource_size(uid, 1))['total_size']['net']
+            update_userStorage(uid, size_after_update)
+
+        return update_result
 
     def create(self, validated_data):
         # Sanity checks

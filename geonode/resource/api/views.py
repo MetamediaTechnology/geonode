@@ -43,6 +43,12 @@ from rest_framework.viewsets import GenericViewSet
 from ..models import ExecutionRequest
 from .utils import filtered, resolve_type_serializer
 
+from geonode.views import (
+    get_resource_size,
+    get_uid,
+    update_userStorage
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -106,6 +112,11 @@ def resource_service_execution_status(request, execution_id: str):
         else:
             _request = _exec_request.get()
             if _request.user == request.user or request.user.is_superuser:
+                owner_id = _request.input_params['uid']
+                uid = get_uid(user_id=owner_id)
+                if uid:
+                    size_after_delete = json.loads(get_resource_size(uid, 1))['total_size']['net']
+                    update_userStorage(uid, size_after_delete)
                 return Response(
                     {
                         'user': _request.user.username,
