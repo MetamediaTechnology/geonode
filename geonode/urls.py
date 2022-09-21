@@ -47,6 +47,12 @@ from oauth2_provider.urls import (
     base_urlpatterns,
     oidc_urlpatterns)
 
+from django.urls import path
+from .views import (
+    get_resource_size_prep,
+    check_limit_storage_prep,
+    get_uid_prep)
+
 admin.autodiscover()
 
 js_info_dict = {
@@ -253,4 +259,10 @@ if settings.MONITORING_ENABLED:
 # Internationalization Javascript
 urlpatterns += [
     url(r'^metadata_update_redirect$', views.metadata_update_redirect, name='metadata_update_redirect'),
+]
+
+urlpatterns += [
+    path('resource-size/', get_resource_size_prep),
+    path('check-limit-storage/', check_limit_storage_prep),
+    path('get-uid/', get_uid_prep),
 ]

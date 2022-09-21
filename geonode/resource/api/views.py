@@ -23,7 +23,7 @@ from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
 from dynamic_rest.viewsets import WithDynamicViewSetMixin
 from geonode.base.api.filters import DynamicSearchFilter
 from geonode.base.api.pagination import GeoNodeApiPagination
-from geonode.base.api.permissions import IsSelfOrAdminOrReadOnly
+from geonode.base.api.permissions import IsOwnerOrReadOnly
 from geonode.resource.api.exceptions import ExecutionRequestException
 from geonode.resource.api.serializer import ExecutionRequestSerializer
 from geonode.resource.manager import resource_manager
@@ -42,6 +42,12 @@ from rest_framework.viewsets import GenericViewSet
 
 from ..models import ExecutionRequest
 from .utils import filtered, resolve_type_serializer
+
+from geonode.views import (
+    get_resource_size,
+    get_uid,
+    update_userStorage
+)
 
 logger = logging.getLogger(__name__)
 
@@ -106,6 +112,11 @@ def resource_service_execution_status(request, execution_id: str):
         else:
             _request = _exec_request.get()
             if _request.user == request.user or request.user.is_superuser:
+                owner_id = _request.input_params['uid']
+                uid = get_uid(user_id=owner_id)
+                if uid:
+                    size_after_delete = json.loads(get_resource_size(uid, 1))['total_size']['net']
+                    update_userStorage(uid, size_after_delete)
                 return Response(
                     {
                         'user': _request.user.username,
@@ -131,7 +142,7 @@ class ExecutionRequestViewset(WithDynamicViewSetMixin, ListModelMixin, RetrieveM
     API endpoint that allows users to be viewed or edited.
     """
     authentication_classes = [SessionAuthentication, BasicAuthentication, OAuth2Authentication]
-    permission_classes = [IsAuthenticated, IsSelfOrAdminOrReadOnly, ]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
     filter_backends = [
         DynamicFilterBackend, DynamicSortingFilter, DynamicSearchFilter
     ]
