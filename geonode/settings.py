@@ -1485,9 +1485,8 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "group": "background",
             "visibility": True,
             "url": "https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/{z}/{x}/{y}.png",
-            "thumbURL": "https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/4/12/7.png",
+            "thumbURL": "https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/4/12/7.png"
         }
-}
     ]
 
     if MAPBOX_ACCESS_TOKEN:
@@ -1525,7 +1524,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "group": "background",
             "visibility": True,
             "url": "https://ms.longdo.com/mmmap/tile.php?proj=epsg3857&mode=icons&zoom={z}&x={x}&y={y}&HD=0&key=" + f"{LONGDO_API_KEY}",
-            "thumbURL": "https://ms.longdo.com/mmmap/tile.php?proj=epsg3857&mode=icons&zoom=4&x=12&y=7&HD=0&key=" + f"{LONGDO_API_KEY}",
+            "thumbURL": "https://ms.longdo.com/mmmap/tile.php?proj=epsg3857&mode=icons&zoom=4&x=12&y=7&HD=0&key=" + f"{LONGDO_API_KEY}"
         }
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
 
