@@ -187,41 +187,11 @@ USE_L10N = ast.literal_eval(os.getenv('USE_I18N', 'True'))
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', "en")
+LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', "th")
 
 _DEFAULT_LANGUAGES = """(
-    ('af', 'Afrikaans'),
-    ('sq', 'Albanian'),
-    ('am', 'Amharic'),
-    ('ar', 'Arabic'),
-    ('id', 'Bahasa Indonesia'),
-    ('bn', 'Bengali'),
-    ('de', 'Deutsch'),
     ('en', 'English'),
-    ('es', 'Español'),
-    ('fr', 'Français'),
-    ('it', 'Italiano'),
-    ('km', 'Khmer'),
-    ('nl', 'Nederlands'),
-    ('ne', 'Nepali'),
-    ('fa', 'Persian'),
-    ('pl', 'Polish'),
-    ('pt', 'Portuguese'),
-    ('pt-br', 'Portuguese (Brazil)'),
-    ('ru', 'Russian'),
-    ('si', 'Sinhala'),
-    ('sw', 'Swahili'),
-    ('sv', 'Swedish'),
-    ('tl', 'Tagalog'),
-    ('ta', 'Tamil'),
-    ('uk', 'Ukranian'),
-    ('vi', 'Vietnamese'),
-    ('el', 'Ελληνικά'),
     ('th', 'ไทย'),
-    ('zh-cn', '中文'),
-    ('ja', '日本語'),
-    ('ko', '한국어'),
-    ('sk', 'Slovensky'),
 )"""
 
 LANGUAGES = ast.literal_eval(os.getenv('LANGUAGES', _DEFAULT_LANGUAGES))
@@ -1428,6 +1398,7 @@ DEFAULT_MAP_ZOOM = int(os.environ.get('DEFAULT_MAP_ZOOM', 0))
 MAPBOX_ACCESS_TOKEN = os.environ.get('MAPBOX_ACCESS_TOKEN', None)
 BING_API_KEY = os.environ.get('BING_API_KEY', None)
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)
+LONGDO_API_KEY = os.environ.get('LONGDO_API_KEY', None)
 
 GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY = os.getenv('GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY', 'mapstore')
 
@@ -1506,7 +1477,17 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "type": "empty",
             "visibility": False,
             "args": ["Empty Background", {"visibility": False}]
+        }, {
+            "type": "tileprovider",
+            "title": "ข้อมูลภาพถ่ายดาวเทียม Sentinel-2 ปี 2563",
+            "provider": "custom",
+            "name": "L02_sentinel2:s2_20200104_20200421_Thailand_10m",
+            "group": "background",
+            "visibility": True,
+            "url": "https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/{z}/{x}/{y}.png",
+            "thumbURL": "https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/4/12/7.png",
         }
+}
     ]
 
     if MAPBOX_ACCESS_TOKEN:
@@ -1534,17 +1515,27 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "visibility": False
         }
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
+    
+    if LONGDO_API_KEY:
+        BASEMAP = {
+            "type": "tileprovider",
+            "title": "Longdo Map",
+            "provider": "custom",
+            "name": "longdo_map_icons",
+            "group": "background",
+            "visibility": True,
+            "url": "https://ms.longdo.com/mmmap/tile.php?proj=epsg3857&mode=icons&zoom={z}&x={x}&y={y}&HD=0&key=" + f"{LONGDO_API_KEY}",
+            "thumbURL": "https://ms.longdo.com/mmmap/tile.php?proj=epsg3857&mode=icons&zoom=4&x=12&y=7&HD=0&key=" + f"{LONGDO_API_KEY}",
+        }
+        DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
 
     MAPSTORE_BASELAYERS = DEFAULT_MS2_BACKGROUNDS
     # MAPSTORE_BASELAYERS_SOURCES allow to configure tilematrix sets for wmts layers
     MAPSTORE_BASELAYERS_SOURCES = os.environ.get('MAPSTORE_BASELAYERS_SOURCES', {})
 
     MAPSTORE_DEFAULT_LANGUAGES = """(
-        ('de-de', 'Deutsch'),
+        ('th-th', 'ไทย'),
         ('en-us', 'English'),
-        ('es-es', 'Español'),
-        ('fr-fr', 'Français'),
-        ('it-it', 'Italiano'),
     )"""
 
     LANGUAGES = ast.literal_eval(os.getenv('LANGUAGES', MAPSTORE_DEFAULT_LANGUAGES))
