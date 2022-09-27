@@ -1433,6 +1433,7 @@ DEFAULT_MAP_ZOOM = int(os.environ.get('DEFAULT_MAP_ZOOM', 0))
 MAPBOX_ACCESS_TOKEN = os.environ.get('MAPBOX_ACCESS_TOKEN', None)
 BING_API_KEY = os.environ.get('BING_API_KEY', None)
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)
+LONGDO_API_KEY = os.environ.get('LONGDO_API_KEY', None)
 
 GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY = os.getenv('GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY', 'mapstore')
 
@@ -1537,6 +1538,19 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "group": "background",
             "apiKey": "{{apiKey}}",
             "visibility": False
+        }
+        DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
+    
+    if LONGDO_API_KEY:
+        BASEMAP = {
+            "type": "tileprovider",
+            "title": "Longdo Map",
+            "provider": "custom",
+            "name": "longdo_map_icons",
+            "group": "background",
+            "visibility": True,
+            "url": "https://ms.longdo.com/mmmap/tile.php?proj=epsg3857&mode=icons&zoom={z}&x={x}&y={y}&HD=0&key=" + f"{LONGDO_API_KEY}",
+            "thumbURL": "https://ms.longdo.com/mmmap/tile.php?proj=epsg3857&mode=icons&zoom=4&x=12&y=7&HD=0&key=" + f"{LONGDO_API_KEY}"
         }
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
 
