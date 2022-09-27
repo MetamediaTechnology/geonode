@@ -1433,6 +1433,7 @@ DEFAULT_MAP_ZOOM = int(os.environ.get('DEFAULT_MAP_ZOOM', 0))
 MAPBOX_ACCESS_TOKEN = os.environ.get('MAPBOX_ACCESS_TOKEN', None)
 BING_API_KEY = os.environ.get('BING_API_KEY', None)
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)
+SPHERE_API_KEY = os.environ.get('SPHERE_API_KEY', None)
 
 GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY = os.getenv('GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY', 'mapstore')
 
@@ -1537,6 +1538,41 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "group": "background",
             "apiKey": "{{apiKey}}",
             "visibility": False
+        }
+        DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
+    
+    if SPHERE_API_KEY:
+        BASEMAP = {
+            "type": "tileprovider",
+            "title": "sphere streets",
+            "provider": "custom",
+            "name": "sphere_streets",
+            "group": "background",
+            "visibility": True,
+            "url": "https://basemap.sphere.gistda.or.th/tiles/sphere_streets/EPSG3857/{z}/{x}/{y}.png?key=" + f"{SPHERE_API_KEY}",
+            "thumbURL": "https://basemap.sphere.gistda.or.th/tiles/sphere_streets/EPSG3857/4/12/7.png?key=" + f"{SPHERE_API_KEY}"
+        }
+        DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
+        BASEMAP = {
+            "type": "tileprovider",
+            "title": "sphere hybrid",
+            "provider": "custom",
+            "name": "sphere_hybrid",
+            "group": "background",
+            "visibility": True,
+            "url": "https://basemap.sphere.gistda.or.th/tiles/sphere_hybrid/EPSG3857/{z}/{x}/{y}.jpeg?key=" + f"{SPHERE_API_KEY}",
+            "thumbURL": "https://basemap.sphere.gistda.or.th/tiles/sphere_hybrid/EPSG3857/4/12/7.jpeg?key=" + f"{SPHERE_API_KEY}"
+        }
+        DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
+        BASEMAP = {
+            "type": "tileprovider",
+            "title": "sphere thailand",
+            "provider": "custom",
+            "name": "thailand_images",
+            "group": "background",
+            "visibility": True,
+            "url": "https://basemap.sphere.gistda.or.th/tiles/thailand_images/EPSG3857/{z}/{x}/{y}.jpeg?key=" + f"{SPHERE_API_KEY}",
+            "thumbURL": "https://basemap.sphere.gistda.or.th/tiles/thailand_images/EPSG3857/4/12/7.jpeg?key=" + f"{SPHERE_API_KEY}"
         }
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
 
