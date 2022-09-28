@@ -285,6 +285,7 @@ ROOT_URLCONF = os.getenv('ROOT_URLCONF', 'geonode.urls')
 STATICFILES_LOCATION = 'static'
 MEDIAFILES_LOCATION = 'uploaded'
 THUMBNAIL_LOCATION = 'thumbs'
+BANNER_LOCATION = 'banners'
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -1540,7 +1541,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "visibility": False
         }
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
-    
+
     if LONGDO_API_KEY:
         BASEMAP = {
             "type": "tileprovider",
@@ -1563,7 +1564,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
         ('en-us', 'English'),
         ('es-es', 'Español'),
         ('fr-fr', 'Français'),
-        ('it-it', 'Italiano'),
+        ('it-it', 'Italiano')
     )"""
 
     LANGUAGES = ast.literal_eval(os.getenv('LANGUAGES', MAPSTORE_DEFAULT_LANGUAGES))
