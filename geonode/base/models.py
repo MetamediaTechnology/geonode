@@ -74,7 +74,9 @@ from geonode.utils import (
 from geonode.thumbs.utils import (
     thumb_size,
     remove_thumbs,
-    get_unique_upload_path)
+    get_unique_upload_path,
+    get_unique_upload_banner_path
+    )
 from geonode.groups.models import GroupProfile
 from geonode.security.utils import get_visible_resources, get_geoapp_subtypes
 from geonode.security.models import PermissionLevelMixin
@@ -1007,6 +1009,8 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     # fields necessary for the apis
     thumbnail_url = models.TextField(_("Thumbnail url"), null=True, blank=True)
     thumbnail_path = models.TextField(_("Thumbnail path"), null=True, blank=True)
+    banner_url = models.TextField(_("Banner url"), null=True, blank="true")
+    banner_path = models.TextField(_("Banner path"), null=True, blank="true")
     rating = models.IntegerField(default=0, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     last_updated = models.DateTimeField(auto_now=True, null=True, blank=True)
@@ -1808,6 +1812,84 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                     f'Error when generating the thumbnail for resource {self.id}. ({e})'
                 )
 
+    def save_banner(self,filename,image):
+        upload_path = get_unique_upload_banner_path(filename)
+        try:
+            # Check that the image is valid
+            if is_monochromatic_image(None, image):
+                if not self.thumbnail_url and not image:
+                    raise Exception("Generated thumbnail image is blank")
+                else:
+                    # Skip Image creation
+                    image = None
+            if upload_path and image:
+                actual_name = storage_manager.save(upload_path, ContentFile(image))
+                actual_file_name = os.path.basename(actual_name)
+
+                if filename != actual_file_name:
+                    upload_path = upload_path.replace(filename, actual_file_name)
+                url = storage_manager.url(upload_path)
+                try:
+                    _default_banner_size = getattr(
+                        settings, 'THUMBNAIL_GENERATOR_DEFAULT_SIZE', {'width': 1200, 'height': 700})
+                    im = Image.open(storage_manager.open(actual_name))
+                    im.thumbnail(
+                        (_default_banner_size['width'], _default_banner_size['height']),
+                        resample=Image.ANTIALIAS)
+                    cover = ImageOps.fit(im, (_default_banner_size['width'], _default_banner_size['height']))
+
+                    tmp_location = os.path.abspath(f"{settings.MEDIA_ROOT}/{upload_path}")
+                    print(tmp_location)
+                    cover.save(tmp_location, format='PNG')
+
+                    with open(tmp_location, 'rb+') as img:
+                        storage_manager.save(storage_manager.path(upload_path), img)
+
+                    if tmp_location != storage_manager.path(upload_path):
+                        os.remove(tmp_location)
+                except Exception as e:
+                    logger.exception(e)
+                # check whether it is a URI or not
+                parsed = urlsplit(url)
+                if not parsed.netloc:
+                    # assuming is a relative path to current site
+                    site_url = settings.SITEURL.rstrip('/') if settings.SITEURL.startswith('http') else settings.SITEURL
+                    url = urljoin(site_url, url)
+
+                if thumb_size(upload_path) == 0:
+                    raise Exception("Generated thumbnail image is zero size")
+                Link.objects.filter(resource=self, name='Thumbnail').delete()
+
+                obj, _created = Link.objects.get_or_create(
+                    resource=self,
+                    name='Banner',
+                    defaults=dict(
+                        url=url,
+                        extension='png',
+                        mime='image/png',
+                        link_type='image',
+                    )
+                )
+                if self.banner_path and storage_manager.exists(self.banner_path):
+                    storage_manager.delete(self.banner_path)
+                self.banner_url = url
+                self.banner_path = upload_path
+                obj.url = url
+                obj.save()
+                ResourceBase.objects.filter(id=self.id).update(
+                    banner_url=url,
+                    banner_path=upload_path
+                )
+        except Exception as e:
+            logger.error(
+                f'Error when generating the thumbnail for resource {self.id}. ({e})'
+            )
+            try:
+                Link.objects.filter(resource=self, name='Thumbnail').delete()
+            except Exception as e:
+                logger.error(
+                    f'Error when generating the thumbnail for resource {self.id}. ({e})'
+                )
     def set_missing_info(self):
         """Set default permissions and point of contacts.
 
