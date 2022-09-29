@@ -1484,8 +1484,8 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "name": "L02_sentinel2:s2_20200104_20200421_Thailand_10m",
             "group": "background",
             "visibility": True,
-            "url": "https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/{z}/{x}/{y}.png",
-            "thumbURL": "https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/4/12/7.png"
+            "url": "https://gs.gistda.or.th/reverseY.php?url=https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/{z}/{x}/{y}.png",
+            "thumbURL": "https://gs.gistda.or.th/reverseY.php?url=https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/4/12/7.png"
         }
     ]
 
