@@ -205,12 +205,6 @@ class ResourceManagerInterface(metaclass=ABCMeta):
         """Allows to generate or re-generate the Thumbnail of a Resource."""
         pass
 
-    @abstractmethod
-    def set_banner(self, uuid: str, /, instance: ResourceBase = None, overwrite: bool = True, check_bbox: bool = True) -> bool:
-        """Allows to generate or re-generate the banner of a Resource."""
-        pass
-
-
 class ResourceManager(ResourceManagerInterface):
 
     def __init__(self, concrete_manager=None):
