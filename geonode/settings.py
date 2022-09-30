@@ -1449,7 +1449,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "name": "mapnik",
             "source": "osm",
             "group": "background",
-            "visibility": True
+            "visibility": False
         }, {
             "type": "tileprovider",
             "title": "OpenTopoMap",
@@ -1478,12 +1478,26 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "visibility": False,
             "args": ["Empty Background", {"visibility": False}]
         }, {
+            "type": "wms",
+            "title": "ข้อมูลภาพถ่ายดาวเทียมรายละเอียด 2 เมตร ปี 2565",
+            "format": "image/png",
+            "id": "thailand_sat_2022",
+            "name": "thailand_sat_2022",
+            "url": "https://msq.dev.gfms.gistda.or.th/service",
+            "group": "background",
+            "thumbURL": "https://msq.dev.gfms.gistda.or.th/service?LAYERS=thailand_sat_2022&FORMAT=image%2Fpng&SRS=EPSG%3A3857&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&TRANSPARENT=TRUE&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&BBOX=11190171.186999,1542804.6803222,11193147.453787,1545671.0688828&WIDTH=623&HEIGHT=600",
+            "visibility": False,
+            "params": {
+                "HEIGHT": 256,
+                "WIDTH": 256
+            }
+        }, {
             "type": "tileprovider",
             "title": "ข้อมูลภาพถ่ายดาวเทียม Sentinel-2 ปี 2563",
             "provider": "custom",
             "name": "L02_sentinel2:s2_20200104_20200421_Thailand_10m",
             "group": "background",
-            "visibility": True,
+            "visibility": False,
             "url": "https://gs.gistda.or.th/reverseY.php?url=https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/{z}/{x}/{y}.png",
             "thumbURL": "https://gs.gistda.or.th/reverseY.php?url=https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/4/12/7.png"
         }
@@ -1499,7 +1513,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "source": "streets-v11",
             "thumbURL": f"https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/6/33/23?access_token={MAPBOX_ACCESS_TOKEN}",  # noqa
             "group": "background",
-            "visibility": True
+            "visibility": False
         }
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
 
