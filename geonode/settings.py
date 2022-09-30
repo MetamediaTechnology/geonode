@@ -1479,6 +1479,76 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "args": ["Empty Background", {"visibility": False}]
         }, {
             "type": "wms",
+            "title": "ข้อมูลภาพถ่ายดาวเทียมรายละเอียด 2 เมตร ปี 2560",
+            "format": "image/png",
+            "id": "thailand_sat_2017",
+            "name": "thailand_sat_2017",
+            "url": "https://msq.dev.gfms.gistda.or.th/service",
+            "group": "background",
+            "thumbURL": "https://msq.dev.gfms.gistda.or.th/service?LAYERS=thailand_sat_2017&FORMAT=image%2Fpng&SRS=EPSG%3A3857&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&TRANSPARENT=TRUE&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&BBOX=11190171.186999,1542804.6803222,11193147.453787,1545671.0688828&WIDTH=623&HEIGHT=600",
+            "visibility": False,
+            "params": {
+                "HEIGHT": 256,
+                "WIDTH": 256
+            }
+        }, {
+            "type": "wms",
+            "title": "ข้อมูลภาพถ่ายดาวเทียมรายละเอียด 2 เมตร ปี 2561",
+            "format": "image/png",
+            "id": "thailand_sat_2018",
+            "name": "thailand_sat_2018",
+            "url": "https://msq.dev.gfms.gistda.or.th/service",
+            "group": "background",
+            "thumbURL": "https://msq.dev.gfms.gistda.or.th/service?LAYERS=thailand_sat_2018&FORMAT=image%2Fpng&SRS=EPSG%3A3857&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&TRANSPARENT=TRUE&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&BBOX=11190171.186999,1542804.6803222,11193147.453787,1545671.0688828&WIDTH=623&HEIGHT=600",
+            "visibility": False,
+            "params": {
+                "HEIGHT": 256,
+                "WIDTH": 256
+            }
+        }, {
+            "type": "wms",
+            "title": "ข้อมูลภาพถ่ายดาวเทียมรายละเอียด 2 เมตร ปี 2562",
+            "format": "image/png",
+            "id": "thailand_sat_2019",
+            "name": "thailand_sat_2019",
+            "url": "https://msq.dev.gfms.gistda.or.th/service",
+            "group": "background",
+            "thumbURL": "https://msq.dev.gfms.gistda.or.th/service?LAYERS=thailand_sat_2019&FORMAT=image%2Fpng&SRS=EPSG%3A3857&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&TRANSPARENT=TRUE&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&BBOX=11190171.186999,1542804.6803222,11193147.453787,1545671.0688828&WIDTH=623&HEIGHT=600",
+            "visibility": False,
+            "params": {
+                "HEIGHT": 256,
+                "WIDTH": 256
+            }
+        }, {
+            "type": "wms",
+            "title": "ข้อมูลภาพถ่ายดาวเทียมรายละเอียด 2 เมตร ปี 2563",
+            "format": "image/png",
+            "id": "thailand_sat_2020",
+            "name": "thailand_sat_2020",
+            "url": "https://msq.dev.gfms.gistda.or.th/service",
+            "group": "background",
+            "thumbURL": "https://msq.dev.gfms.gistda.or.th/service?LAYERS=thailand_sat_2020&FORMAT=image%2Fpng&SRS=EPSG%3A3857&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&TRANSPARENT=TRUE&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&BBOX=11190171.186999,1542804.6803222,11193147.453787,1545671.0688828&WIDTH=623&HEIGHT=600",
+            "visibility": False,
+            "params": {
+                "HEIGHT": 256,
+                "WIDTH": 256
+            }
+        }, {
+            "type": "wms",
+            "title": "ข้อมูลภาพถ่ายดาวเทียมรายละเอียด 2 เมตร ปี 2564",
+            "format": "image/png",
+            "id": "thailand_sat_2021",
+            "name": "thailand_sat_2021",
+            "url": "https://msq.dev.gfms.gistda.or.th/service",
+            "group": "background",
+            "thumbURL": "https://msq.dev.gfms.gistda.or.th/service?LAYERS=thailand_sat_2021&FORMAT=image%2Fpng&SRS=EPSG%3A3857&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&TRANSPARENT=TRUE&SERVICE=WMS&VERSION=1.1.1&REQUEST=GetMap&STYLES=&BBOX=11190171.186999,1542804.6803222,11193147.453787,1545671.0688828&WIDTH=623&HEIGHT=600",
+            "visibility": False,
+            "params": {
+                "HEIGHT": 256,
+                "WIDTH": 256
+            }
+        }, {
+            "type": "wms",
             "title": "ข้อมูลภาพถ่ายดาวเทียมรายละเอียด 2 เมตร ปี 2565",
             "format": "image/png",
             "id": "thailand_sat_2022",
@@ -1491,16 +1561,17 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
                 "HEIGHT": 256,
                 "WIDTH": 256
             }
-        }, {
-            "type": "tileprovider",
-            "title": "ข้อมูลภาพถ่ายดาวเทียม Sentinel-2 ปี 2563",
-            "provider": "custom",
-            "name": "L02_sentinel2:s2_20200104_20200421_Thailand_10m",
-            "group": "background",
-            "visibility": False,
-            "url": "https://gs.gistda.or.th/reverseY.php?url=https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/{z}/{x}/{y}.png",
-            "thumbURL": "https://gs.gistda.or.th/reverseY.php?url=https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/4/12/7.png"
         }
+        # }, {
+        #     "type": "tileprovider",
+        #     "title": "ข้อมูลภาพถ่ายดาวเทียม Sentinel-2 ปี 2563",
+        #     "provider": "custom",
+        #     "name": "L02_sentinel2:s2_20200104_20200421_Thailand_10m",
+        #     "group": "background",
+        #     "visibility": False,
+        #     "url": "https://gs.gistda.or.th/reverseY.php?url=https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/{z}/{x}/{y}.png",
+        #     "thumbURL": "https://gs.gistda.or.th/reverseY.php?url=https://gservices.gistda.or.th/production/tms/s2_20200104_20200421_Thailand_10m@EPSG:3857@png/4/12/7.png"
+        # }
     ]
 
     if MAPBOX_ACCESS_TOKEN:
