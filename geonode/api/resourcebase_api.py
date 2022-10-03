@@ -141,6 +141,7 @@ class CommonModelApi(ModelResource):
         'supplemental_information',
         'site_url',
         'thumbnail_url',
+        'banner_url',
         'detail_url',
         'rating',
         'group__name',
