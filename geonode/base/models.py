@@ -1009,8 +1009,8 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     # fields necessary for the apis
     thumbnail_url = models.TextField(_("Thumbnail url"), null=True, blank=True)
     thumbnail_path = models.TextField(_("Thumbnail path"), null=True, blank=True)
-    banner_url_1 = models.TextField(_("Banner url"), null=True, blank=True)
-    banner_path_1 = models.TextField(_("Banner path"), null=True, blank=True)
+    banner_url = models.TextField(_("Banner url"), null=True, blank=True)
+    banner_path = models.TextField(_("Banner path"), null=True, blank=True)
     rating = models.IntegerField(default=0, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     last_updated = models.DateTimeField(auto_now=True, null=True, blank=True)
