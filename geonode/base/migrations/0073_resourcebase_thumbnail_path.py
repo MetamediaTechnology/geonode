@@ -14,15 +14,5 @@ class Migration(migrations.Migration):
             model_name='resourcebase',
             name='thumbnail_path',
             field=models.TextField(blank=True, null=True, verbose_name='Thumbnail path'),
-        ),
-        migrations.AddField(
-            model_name='resourcebase',
-            name='banner_path',
-            field=models.TextField(blank=True, null=True, verbose_name='Banner path'),
-        ),
-        migrations.AddField(
-            model_name='resourcebase',
-            name='banner_url',
-            field=models.TextField(blank=True, null=True, verbose_name='Banner url'),
-        ),
+        )
     ]
