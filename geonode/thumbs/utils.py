@@ -554,6 +554,15 @@ def get_unique_upload_path(filename):
     upload_path = thumb_path(unique_file_name)
     return upload_path
 
+def get_unique_upload_banner_path(filename):
+    """ Generates a unique name from the given filename and
+    creates a unique file upload path"""
+    # create an upload path from a unique filename
+    filename, ext = os.path.splitext(filename)
+    unique_file_name = f'{filename}-{uuid4()}{ext}'
+    upload_path = os.path.join(settings.BANNER_LOCATION, unique_file_name)
+    return upload_path
+
 
 def _decode_base64(data):
     """Decode base64, padding being optional.

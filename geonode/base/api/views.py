@@ -675,7 +675,6 @@ class ResourceBaseViewSet(DynamicModelViewSet):
             traceback.print_exc()
             logger.error(e)
             return Response(data={"message": e.args[0], "success": False}, status=500, exception=True)
-
     @extend_schema(
         methods=["post"], responses={200}, description="Instructs the Async dispatcher to execute a 'INGEST' operation."
     )
@@ -1231,6 +1230,72 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                 "rating": user_rating.rating if user_rating else 0,
                 "overall_rating": overall_rating
             }
+        )
+        
+    @extend_schema(
+        methods=['put'],
+        responses={200},
+        description="API endpoint allowing to set thumbnail of the Resource."
+    )
+    @action(
+        detail=True,
+        url_path="set_banner",
+        url_name="set_banner",
+        methods=["put"],
+        permission_classes=[
+            IsAuthenticated, UserHasPerms
+        ],
+        parser_classes=[JSONParser, MultiPartParser]
+    )
+    def set_banner(self, request, pk):
+        global banner_file
+        resource = get_object_or_404(ResourceBase, pk=pk)
+
+        if not request.data.get('banner_file'):
+            raise ValidationError("Field file is required")
+
+        file_data = request.data['banner_file']
+        if isinstance(file_data, str):
+            if re.match(BASE64_PATTERN, file_data):
+                try:
+                    banner_file, _banner_file_format = _decode_base64(file_data)
+                except Exception:
+                    return Response(
+                        'The request body is not a valid base64 string or the image format is not PNG or JPEG',
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+            else:
+                try:
+                    # Check if file_data is a valid url and set it as thumbail_url
+                    validate = URLValidator()
+                    validate(file_data)
+                    if urlparse(file_data).path.rsplit('.')[-1] not in ['png', 'jpeg', 'jpg']:
+                        return Response(
+                            'The url must be of an image with format (png, jpeg or jpg)',
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
+                    resource.banner_url = file_data
+                    resource.save()
+                    return Response({"banner_url": resource.banner_url})
+                except Exception:
+                    raise ValidationError(detail='file is either a file upload, ASCII byte string or a valid image url string')
+        else:
+            # Validate size
+            if file_data.size > 5000000:
+                raise ValidationError(detail='File must not exceed 5MB')
+
+            banner_file = file_data.read()
+            try:
+                file_data.seek(0)
+                Image.open(file_data)
+            except Exception:
+                raise ValidationError(detail='Invalid data provided')
+        if banner_file:
+            resource_manager.set_banner(resource.uuid, instance=resource, banner=banner_file)
+            return Response({"banner_url": resource.banner_url})
+        return Response(
+            'Unable to set banner',
+            status=status.HTTP_400_BAD_REQUEST
         )
 
     @extend_schema(
