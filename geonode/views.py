@@ -276,7 +276,7 @@ def get_resource_size(uid,show_resources=0):
         cur = conn.cursor()
 
         cursor = connection.cursor()
-        cursor.execute(f"""SELECT people.id user_id, people.username, resource.id resource_id, resource.title resource_title, resource.resource_type, resource.alternate, upload.upload_dir, resource.blob, resource.files
+        cursor.execute(f"""SELECT people.id user_id, people.username, resource.id resource_id, resource.title resource_title, resource.resource_type, resource.alternate, upload.upload_dir, resource.blob, resource.files, resource.subtype
             FROM people_profile people
             LEFT JOIN base_resourcebase resource ON resource.owner_id = people.id
             LEFT JOIN upload_upload upload ON upload.resource_id = resource.id
@@ -289,12 +289,32 @@ def get_resource_size(uid,show_resources=0):
         for row in range(len(upload_result)):
             if upload_result[row][4] == 'dataset':
                 if upload_result[row][6]:
-                    dataset_original_size = round(getFolderSize(upload_result[row][6])/1024.0,2)
+                    try:
+                        dataset_original_size = round(getFolderSize(upload_result[row][6])/1024.0,2)
+                    except: # if can not find real path
+                        dataset_original_size = 0
                 else:
                     dataset_original_size = 0
-                geoserver_table = upload_result[row][5].split(':')[1]
-                cur.execute(f"SELECT pg_total_relation_size('\"{geoserver_table}\"')")
-                dataset_db_size = round(cur.fetchall()[0][0]/1024.0,2)
+                if dataset_original_size == 0:
+                    # try to search upload file path in base_resourcebase.files
+                    cursor = connection.cursor()
+                    cursor.execute(f"""SELECT files FROM base_resourcebase
+                        WHERE id = {upload_result[row][2]}""")
+                    file_path = cursor.fetchall()
+                    if file_path:
+                        file_path_lst = json.loads(file_path[0][0])
+                        path = os.path.dirname(file_path_lst[0])
+                        try:
+                            dataset_original_size = round(getFolderSize(path)/1024.0,2)
+                        except: # if can not find real path
+                            dataset_original_size = 0
+                file_extension = os.path.splitext(os.path.basename(json.loads(upload_result[row][8])[0]))[1]
+                if upload_result[row][9] == 'vector': #and file_extension != '.gpkg':
+                    geoserver_table = upload_result[row][5].split(':')[1]
+                    cur.execute(f"SELECT pg_total_relation_size('\"{geoserver_table}\"')")
+                    dataset_db_size = round(cur.fetchall()[0][0]/1024.0,2)
+                else:
+                    dataset_db_size = 0
                 dataset_url = os.environ['SITEURL'] + 'catalogue/#/dataset/' + str(upload_result[row][2])
                 result_detail.append(
                     {
