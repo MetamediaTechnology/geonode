@@ -457,3 +457,22 @@ def update_userStorage(uid,storageUsage):
         return True
     else:
         return False
+
+def get_mapkey(uid,projectName,type,ip,appId,applicationId):
+    client = requests.session()
+    clients = 'https://'+settings.SITE_HOST_NAME +'/catalogue/#/'+ type +'/'+appId
+    try:
+        response = client.post(
+        url = settings.SPHERE_WEB_SERVICE_URL + "api/apiKey",
+        json = {
+              'keycloakId': uid,
+              'projectName': projectName,
+              'clients': clients,
+              'allowIps': ip,
+              'applicationId': applicationId
+        }
+    )
+        response_json = json.loads(response.text)
+        return response_json['key']
+    except:
+        return 
