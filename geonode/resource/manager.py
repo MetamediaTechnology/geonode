@@ -842,6 +842,13 @@ class ResourceManager(ResourceManagerInterface):
             except Exception as e:
                 logger.exception(e)
         return False
+    def set_map_key(self, uuid: str, /, instance: ResourceBase = None,overwrite: bool = True,map_key="") -> bool:
+        _resource = instance or ResourceManager._get_instance(uuid)
+        _resource.set_map_key(map_key)
+        return True
+
+
+
 
 
 resource_manager = ResourceManager()
