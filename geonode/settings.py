@@ -1562,6 +1562,12 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
     # MAPSTORE_BASELAYERS_SOURCES allow to configure tilematrix sets for wmts layers
     MAPSTORE_BASELAYERS_SOURCES = os.environ.get('MAPSTORE_BASELAYERS_SOURCES', {})
 
+    LONGDO_API_KEY = os.environ.get('LONGDO_API_KEY', '')
+    SPHERE_API_KEY = os.environ.get('SPHERE_API_KEY', '')
+    MAP_API_URL = os.environ.get('MAP_API_URL', '')
+    ROUTE_API_URL = os.environ.get('ROUTE_API_URL', '')
+    SEARCH_API_URL = os.environ.get('SEARCH_API_URL', '')
+
     MAPSTORE_DEFAULT_LANGUAGES = """(
         ('de-de', 'Deutsch'),
         ('en-us', 'English'),
