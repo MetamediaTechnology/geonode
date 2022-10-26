@@ -416,7 +416,7 @@ def get_resource_size_prep(request):
 def get_userStorage(uid):
     client = requests.session()
     response = client.get(
-        url = "https://thaimap-backend.longdo.com/api/userStorage?keycloak_id=" + uid
+        url = settings.SPHERE_WEB_SERVICE_URL + "api/userStorage?keycloak_id=" + uid
     )
     response_dict = response.content
     resp_obj = json.loads(response_dict)
@@ -447,7 +447,7 @@ def check_limit_storage_prep(request):
 def update_userStorage(uid,storageUsage):
     client = requests.session()
     response = client.put(
-        url = "https://thaimap-backend.longdo.com/api/userStorage",
+        url = settings.SPHERE_WEB_SERVICE_URL + "api/userStorage",
         json = {
             'storageUsage': storageUsage,
             'keycloakId': uid
