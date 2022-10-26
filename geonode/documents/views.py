@@ -194,7 +194,7 @@ class DocumentUploadView(CreateView):
 
         file = doc_form.pop('doc_file', None)
 
-        file_size = file.size / 1024.0
+        file_size = file.size / 1048576.0
         if not self.request.user.is_staff:
             username = self.request.user
             uid = get_uid(username=username)
