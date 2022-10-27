@@ -1564,7 +1564,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
     MAPSTORE_BASELAYERS_SOURCES = os.environ.get('MAPSTORE_BASELAYERS_SOURCES', {})
 
     MAP_API_URL = os.environ.get('MAP_API_URL', 'https://api.longdo.com/map/')
-    ROUTE_API_URL = os.environ.get('ROUTE_API_URL', 'https://api.longdo.com/RouteService/geojson/route/')
+    ROUTE_API_URL = os.environ.get('ROUTE_API_URL', 'https://api.longdo.com/RouteService/geojson/route')
     SEARCH_API_URL = os.environ.get('SEARCH_API_URL', 'https://search.longdo.com/mapsearch/json/search/')
 
     MAPSTORE_DEFAULT_LANGUAGES = """(
