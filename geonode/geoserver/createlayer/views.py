@@ -23,6 +23,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.template.defaultfilters import slugify
 from django.shortcuts import redirect
+from django.conf import settings
 
 from geonode.security.permissions import DEFAULT_PERMS_SPEC
 
@@ -45,12 +46,13 @@ def dataset_create(request, template='createlayer/dataset_create.html'):
     if request.method == 'POST':
         form = NewDatasetForm(request.POST)
         if form.is_valid():
-            if not request.user.is_staff:
+            if not request.user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
                 username = request.user
                 uid = get_uid(username=username)
                 is_able_upload = check_limit_size(uid,0)
             else:
                 is_able_upload = True
+
             if not is_able_upload:
             #raise ValidationError("Storage usage exceed limit.")
                 error = 'Storage usage exceed limit.'
@@ -65,7 +67,7 @@ def dataset_create(request, template='createlayer/dataset_create.html'):
                     layer = create_dataset(name, title, request.user.username, geometry_type, attributes)
                     layer.set_permissions(json.loads(permissions), created=True)
 
-                    if not request.user.is_staff:
+                    if not request.user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
                         size_after_update = json.loads(get_resource_size(uid, 1))['total_size']['net']
                         update_userStorage(uid, size_after_update)
 

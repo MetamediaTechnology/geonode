@@ -952,6 +952,8 @@ LOGOUT_URL = os.getenv('LOGOUT_URL', f'{SITEURL}account/logout/')
 ACCOUNT_LOGIN_REDIRECT_URL = os.getenv('LOGIN_REDIRECT_URL', SITEURL)
 ACCOUNT_LOGOUT_REDIRECT_URL = os.getenv('LOGOUT_REDIRECT_URL', SITEURL)
 
+ENABLE_CHECK_USER_STORAGE = ast.literal_eval(os.getenv('ENABLE_CHECK_USER_STORAGE', 'False'))
+
 # sphere Web service
 SPHERE_WEB_SERVICE_URL = os.getenv('SPHERE_WEB_SERVICE_URL','https://thaimap-backend.longdo.com/') 
 

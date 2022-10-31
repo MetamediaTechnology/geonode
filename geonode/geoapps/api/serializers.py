@@ -18,6 +18,7 @@
 #########################################################################
 import logging
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from geonode.geoapps.api.exceptions import DuplicateGeoAppException, InvalidGeoAppException, GeneralGeoAppException
 
@@ -108,7 +109,8 @@ class GeoAppSerializer(ResourceBaseSerializer):
             uid = get_uid(username=username)
         else:
             uid = get_uid(resource_id=instance.id)
-        if uid:
+
+        if uid and settings.ENABLE_CHECK_USER_STORAGE:
             is_able_upload = check_limit_size(uid, 0)
             if not is_able_upload:
                 raise ValidationError("Storage usage exceed limit.")
@@ -137,7 +139,7 @@ class GeoAppSerializer(ResourceBaseSerializer):
             vals=validated_data,
             notify=True)
 
-        if uid:
+        if uid and settings.ENABLE_CHECK_USER_STORAGE:
             size_after_update = json.loads(get_resource_size(uid, 1))['total_size']['net']
             update_userStorage(uid, size_after_update)
 
