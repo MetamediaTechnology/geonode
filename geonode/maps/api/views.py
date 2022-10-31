@@ -20,6 +20,7 @@ import logging
 from urllib import request
 from uuid import uuid4
 
+from django.conf import settings
 from django.db import transaction
 from drf_spectacular.utils import extend_schema
 from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
@@ -157,13 +158,14 @@ class MapViewSet(DynamicModelViewSet):
 
         # Get sphere api
         keyclok_uid = get_uid(username=self.request.user)
-        projectName = 'MapMaker_Map_' + instance.title + '_' + str(instance.id)
-        mapKey = get_mapkey(keyclok_uid,projectName,'map','',str(instance.id),projectName)
-        if mapKey:
-            resource_manager.set_map_key(instance.uuid, instance=instance, overwrite=False,map_key=mapKey)
+        if keyclok_uid:
+            projectName = 'MapMaker_Map_' + instance.title + '_' + str(instance.id)
+            mapKey = get_mapkey(keyclok_uid,projectName,'map','',str(instance.id),projectName)
+            if mapKey:
+                resource_manager.set_map_key(instance.uuid, instance=instance, overwrite=False,map_key=mapKey)
         
 
-        if not self.request.user.is_staff:
+        if not self.request.user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
             size_after_update = json.loads(get_resource_size(uid, 1))['total_size']['net']
             update_userStorage(uid, size_after_update)
 
@@ -186,7 +188,7 @@ class MapViewSet(DynamicModelViewSet):
         instance = serializer.save()
 
         uid = get_uid(resource_id=mapid)
-        if not self.request.user.is_staff:
+        if not self.request.user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
             size_after_update = json.loads(get_resource_size(uid, 1))['total_size']['net']
             update_userStorage(uid, size_after_update)
 
@@ -197,7 +199,7 @@ class MapViewSet(DynamicModelViewSet):
             additional_data=post_change_data,
         )
 
-        if uid:
+        if uid and settings.ENABLE_CHECK_USER_STORAGE:
             size_after_update = json.loads(get_resource_size(uid, 1))['total_size']['net']
             update_userStorage(uid, size_after_update)
 

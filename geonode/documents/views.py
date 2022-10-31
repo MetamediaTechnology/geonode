@@ -274,7 +274,7 @@ class DocumentUploadView(CreateView):
 
         register_event(self.request, EventType.EVENT_UPLOAD, self.object)
 
-        if not self.request.user.is_staff:
+        if not self.request.user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
             size_after_upload = json.loads(get_resource_size(uid, 1))['total_size']['net']
             update_userStorage(uid, size_after_upload)
 

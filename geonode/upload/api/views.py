@@ -34,6 +34,7 @@ from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 
 from django.shortcuts import reverse
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
 from geonode.base.api.filters import DynamicSearchFilter
 from geonode.base.api.permissions import IsOwnerOrReadOnly, IsSelfOrAdminOrReadOnly
@@ -201,7 +202,7 @@ class UploadViewSet(DynamicModelViewSet):
                     request,
                     step
                 )
-            if not user.is_staff:
+            if not user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
                 size_after_upload = json.loads(get_resource_size(uid, 1))['total_size']['net']
                 update_userStorage(uid, size_after_upload)
             return response
@@ -215,7 +216,7 @@ class UploadViewSet(DynamicModelViewSet):
                 next_step
             )
             if is_final:
-                if not user.is_staff:
+                if not user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
                     size_after_upload = json.loads(get_resource_size(uid, 1))['total_size']['net']
                     update_userStorage(uid, size_after_upload)
                 return response
