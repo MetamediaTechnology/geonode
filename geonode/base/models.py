@@ -1011,6 +1011,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
     thumbnail_path = models.TextField(_("Thumbnail path"), null=True, blank=True)
     banner_url = models.TextField(_("Banner url"), null=True, blank=True)
     banner_path = models.TextField(_("Banner path"), null=True, blank=True)
+    map_key = models.TextField(_("Map key"), null=True, blank=True)
     rating = models.IntegerField(default=0, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     last_updated = models.DateTimeField(auto_now=True, null=True, blank=True)
@@ -1858,7 +1859,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
 
                 if thumb_size(upload_path) == 0:
                     raise Exception("Generated thumbnail image is zero size")
-                Link.objects.filter(resource=self, name='Thumbnail').delete()
+                Link.objects.filter(resource=self, name='Banner').delete()
 
                 obj, _created = Link.objects.get_or_create(
                     resource=self,
@@ -1882,14 +1883,33 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                 )
         except Exception as e:
             logger.error(
-                f'Error when generating the thumbnail for resource {self.id}. ({e})'
+                f'Error when generating the banner for resource {self.id}. ({e})'
             )
             try:
-                Link.objects.filter(resource=self, name='Thumbnail').delete()
+                Link.objects.filter(resource=self, name='Banner').delete()
             except Exception as e:
                 logger.error(
-                    f'Error when generating the thumbnail for resource {self.id}. ({e})'
+                    f'Error when generating the banner for resource {self.id}. ({e})'
                 )
+    def set_map_key(self,mapkey):
+        try:
+            if mapkey:
+                obj, _created = Link.objects.get_or_create(
+                    resource=self,
+                    name='MapKey',
+                    defaults=''
+                )
+
+                obj.save()
+                ResourceBase.objects.filter(id=self.id).update(
+                    map_key=mapkey,
+                )
+
+                self.map_key = mapkey
+        except Exception as e:
+            logger.error('Can not set map key')
+
+
     def set_missing_info(self):
         """Set default permissions and point of contacts.
 

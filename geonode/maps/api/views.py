@@ -17,6 +17,7 @@
 #
 #########################################################################
 import logging
+from urllib import request
 from uuid import uuid4
 
 from django.db import transaction
@@ -46,12 +47,14 @@ from geonode.utils import resolve_object
 
 from geonode.views import (
     get_resource_size,
+    get_mapkey,
     get_uid,
     check_limit_size,
     update_userStorage,
 )
 import json
 from django.core.exceptions import ValidationError
+
 
 logger = logging.getLogger(__name__)
 
@@ -122,11 +125,18 @@ class MapViewSet(DynamicModelViewSet):
         # Thumbnail will be handled later
         post_creation_data = {"thumbnail": serializer.validated_data.pop("thumbnail_url", "")}
 
+        # XSS basic protect and is not standard - if concern please replace this line 129 - 132. Thanks
+        appName = self.request.data['title']
+        if appName.find("<script>") != -1 or appName.find('javascript') != -1:
+            print(appName)
+            raise ValidationError("XSS Dectection")
+
         instance = serializer.save(
             owner=self.request.user,
             resource_type="map",
             uuid=str(uuid4()),
         )
+
 
         if not self.request.user.is_staff:
             username = self.request.user
@@ -141,8 +151,17 @@ class MapViewSet(DynamicModelViewSet):
             create_action_perfomed=True,
             additional_data=post_creation_data,
         )
+
         # Handle thumbnail generation
         resource_manager.set_thumbnail(instance.uuid, instance=instance, overwrite=False)
+
+        # Get sphere api
+        keyclok_uid = get_uid(username=self.request.user)
+        projectName = 'MapMaker_Map_' + instance.title + '_' + str(instance.id)
+        mapKey = get_mapkey(keyclok_uid,projectName,'map','',str(instance.id),projectName)
+        if mapKey:
+            resource_manager.set_map_key(instance.uuid, instance=instance, overwrite=False,map_key=mapKey)
+        
 
         if not self.request.user.is_staff:
             size_after_update = json.loads(get_resource_size(uid, 1))['total_size']['net']

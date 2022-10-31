@@ -952,6 +952,9 @@ LOGOUT_URL = os.getenv('LOGOUT_URL', f'{SITEURL}account/logout/')
 ACCOUNT_LOGIN_REDIRECT_URL = os.getenv('LOGIN_REDIRECT_URL', SITEURL)
 ACCOUNT_LOGOUT_REDIRECT_URL = os.getenv('LOGOUT_REDIRECT_URL', SITEURL)
 
+# sphere Web service
+SPHERE_WEB_SERVICE_URL = os.getenv('SPHERE_WEB_SERVICE_URL','https://thaimap-backend.longdo.com/') 
+
 # Backend
 DEFAULT_WORKSPACE = os.getenv('DEFAULT_WORKSPACE', 'geonode')
 CASCADE_WORKSPACE = os.getenv('CASCADE_WORKSPACE', 'geonode')
@@ -1434,6 +1437,7 @@ DEFAULT_MAP_ZOOM = int(os.environ.get('DEFAULT_MAP_ZOOM', 0))
 MAPBOX_ACCESS_TOKEN = os.environ.get('MAPBOX_ACCESS_TOKEN', None)
 BING_API_KEY = os.environ.get('BING_API_KEY', None)
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)
+LONGDO_API_KEY = os.environ.get('LONGDO_API_KEY', None)
 SPHERE_API_KEY = os.environ.get('SPHERE_API_KEY', None)
 
 GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY = os.getenv('GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY', 'mapstore')
@@ -1580,6 +1584,10 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
     MAPSTORE_BASELAYERS = DEFAULT_MS2_BACKGROUNDS
     # MAPSTORE_BASELAYERS_SOURCES allow to configure tilematrix sets for wmts layers
     MAPSTORE_BASELAYERS_SOURCES = os.environ.get('MAPSTORE_BASELAYERS_SOURCES', {})
+
+    MAP_API_URL = os.environ.get('MAP_API_URL', 'https://api.longdo.com/map/')
+    ROUTE_API_URL = os.environ.get('ROUTE_API_URL', 'https://api.longdo.com/RouteService/geojson/route')
+    SEARCH_API_URL = os.environ.get('SEARCH_API_URL', 'https://search.longdo.com/mapsearch/json/search/')
 
     MAPSTORE_DEFAULT_LANGUAGES = """(
         ('de-de', 'Deutsch'),
@@ -2285,13 +2293,13 @@ SUPPORTED_DATASET_FILE_TYPES = [
         'ext': ['json', 'geojson'],
         'optional': ['xml', 'sld']
     },
-    # {
-    #     'id': 'kml',
-    #     'label': 'KML',
-    #     'format': 'vector',
-    #     'ext': ['kml'],
-    #     'optional': ['xml', 'sld']
-    # }
+    {
+        'id': 'kml',
+        'label': 'KML',
+        'format': 'vector',
+        'ext': ['kml'],
+        'optional': ['xml', 'sld']
+    }
 ]
 
 INSTALLED_APPS += ('dynamic_models', 'importer', 'importer.handlers',)
