@@ -166,7 +166,7 @@ class UploadViewSet(DynamicModelViewSet):
             raise AuthenticationFailed()
 
         # Check file size
-        if not user.is_staff:
+        if not user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
             username = user.get_username()
             uid = get_uid(username=username)
             file_name = request.FILES.get('base_file')
