@@ -139,7 +139,7 @@ class MapViewSet(DynamicModelViewSet):
         )
 
 
-        if not self.request.user.is_staff:
+        if not self.request.user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
             username = self.request.user
             uid = get_uid(username=username)
             is_able_upload = check_limit_size(uid, 0)
