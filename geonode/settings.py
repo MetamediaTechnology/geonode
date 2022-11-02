@@ -955,7 +955,7 @@ ACCOUNT_LOGOUT_REDIRECT_URL = os.getenv('LOGOUT_REDIRECT_URL', SITEURL)
 ENABLE_CHECK_USER_STORAGE = ast.literal_eval(os.getenv('ENABLE_CHECK_USER_STORAGE', 'False'))
 
 # sphere Web service
-SPHERE_WEB_SERVICE_URL = os.getenv('SPHERE_WEB_SERVICE_URL','https://thaimap-backend.longdo.com/') 
+SPHERE_WEB_SERVICE_URL = os.getenv('SPHERE_WEB_SERVICE_URL','https://backend.sphere-dev.gistda.or.th/') 
 
 # Backend
 DEFAULT_WORKSPACE = os.getenv('DEFAULT_WORKSPACE', 'geonode')
@@ -1587,9 +1587,9 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
     # MAPSTORE_BASELAYERS_SOURCES allow to configure tilematrix sets for wmts layers
     MAPSTORE_BASELAYERS_SOURCES = os.environ.get('MAPSTORE_BASELAYERS_SOURCES', {})
 
-    MAP_API_URL = os.environ.get('MAP_API_URL', 'https://api.longdo.com/map/')
-    ROUTE_API_URL = os.environ.get('ROUTE_API_URL', 'https://api.longdo.com/RouteService/geojson/route')
-    SEARCH_API_URL = os.environ.get('SEARCH_API_URL', 'https://search.longdo.com/mapsearch/json/search/')
+    MAP_API_URL = os.environ.get('MAP_API_URL', 'https://api.sphere-dev.gistda.or.th/map/')
+    ROUTE_API_URL = os.environ.get('ROUTE_API_URL', 'https://api.sphere-dev.gistda.or.th/services/route/route')
+    SEARCH_API_URL = os.environ.get('SEARCH_API_URL', 'https://api.sphere-dev.gistda.or.th/services/search/search')
 
     MAPSTORE_DEFAULT_LANGUAGES = """(
         ('de-de', 'Deutsch'),
@@ -2038,7 +2038,7 @@ SOCIALACCOUNT_PROVIDERS = {
     },
     'keycloak': {
         'KEYCLOAK_URL': 'https://auth.sphere-dev.gistda.or.th/auth',
-        'KEYCLOAK_REALM': 'master'
+        'KEYCLOAK_REALM': 'sphere'
     },
 }
 
