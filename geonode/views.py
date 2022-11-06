@@ -470,7 +470,7 @@ def update_userStorage(uid,storageUsage):
 
 def get_mapkey(uid,projectName,type,ip,appId,applicationId):
     client = requests.session()
-    clients = os.environ['SITEURL'] + '/catalogue/#/' + type + '/' + appId
+    clients = os.environ['SITEURL'] + 'catalogue/#/' + type + '/' + appId
     try:
         response = client.post(
         url = settings.SPHERE_WEB_SERVICE_URL + "api/apiKey",
