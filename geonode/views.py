@@ -310,9 +310,19 @@ def get_resource_size(uid,show_resources=0):
                             dataset_original_size = 0
                 file_extension = os.path.splitext(os.path.basename(json.loads(upload_result[row][8])[0]))[1]
                 if upload_result[row][9] == 'vector': #and file_extension != '.gpkg':
-                    geoserver_table = upload_result[row][5].split(':')[1]
-                    cur.execute(f"SELECT pg_total_relation_size('\"{geoserver_table}\"')")
-                    dataset_db_size = round(cur.fetchall()[0][0]/1048576.0,2)
+                    try:
+                        geoserver_table = upload_result[row][5].split(':')[1]
+                        cur.execute(f"SELECT pg_total_relation_size('\"{geoserver_table}\"')")
+                        dataset_db_size = round(cur.fetchall()[0][0]/1048576.0,2)
+                    except:
+                        dataset_db_size = 0
+                        try:
+                            if geoserver_table[0:2] == 'a_':
+                                geoserver_table = geoserver_table[2:]
+                                cur.execute(f"SELECT pg_total_relation_size('\"{geoserver_table}\"')")
+                                dataset_db_size = round(cur.fetchall()[0][0]/1048576.0,2)
+                        except:
+                            dataset_db_size = 0
                 else:
                     dataset_db_size = 0
                 dataset_url = os.environ['SITEURL'] + 'catalogue/#/dataset/' + str(upload_result[row][2])
