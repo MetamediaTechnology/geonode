@@ -1491,7 +1491,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "name": "mapnik",
             "source": "osm",
             "group": "background",
-            "visibility": True
+            "visibility": False
         }, {
             "type": "tileprovider",
             "title": "OpenTopoMap",
@@ -1532,7 +1532,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "source": "streets-v11",
             "thumbURL": f"https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/6/33/23?access_token={MAPBOX_ACCESS_TOKEN}",  # noqa
             "group": "background",
-            "visibility": True
+            "visibility": False
         }
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
 
@@ -1566,7 +1566,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "provider": "custom",
             "name": "sphere_hybrid",
             "group": "background",
-            "visibility": True,
+            "visibility": False,
             "url": "https://basemap.sphere.gistda.or.th/tiles/sphere_hybrid/EPSG3857/{z}/{x}/{y}.jpeg?key=" + f"{SPHERE_API_KEY}",
             "thumbURL": "https://basemap.sphere.gistda.or.th/tiles/sphere_hybrid/EPSG3857/4/12/7.jpeg?key=" + f"{SPHERE_API_KEY}"
         }
@@ -1577,7 +1577,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "provider": "custom",
             "name": "thailand_images",
             "group": "background",
-            "visibility": True,
+            "visibility": False,
             "url": "https://basemap.sphere.gistda.or.th/tiles/thailand_images/EPSG3857/{z}/{x}/{y}.jpeg?key=" + f"{SPHERE_API_KEY}",
             "thumbURL": "https://basemap.sphere.gistda.or.th/tiles/thailand_images/EPSG3857/4/12/7.jpeg?key=" + f"{SPHERE_API_KEY}"
         }
