@@ -192,6 +192,13 @@ class MapViewSet(DynamicModelViewSet):
             size_after_update = json.loads(get_resource_size(uid, 1))['total_size']['net']
             update_userStorage(uid, size_after_update)
 
+        if not self.request.user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
+            username = self.request.user
+            uid = get_uid(username=username)
+            is_able_upload = check_limit_size(uid, 0)
+            if not is_able_upload:
+                raise ValidationError("Storage usage exceed limit.")
+
         # thumbnail, events and resouce routines
         self._post_change_routines(
             instance=instance,

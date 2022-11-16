@@ -25,6 +25,7 @@ from geonode.geoapps.api.exceptions import DuplicateGeoAppException, InvalidGeoA
 from geonode.geoapps.models import GeoApp
 from geonode.resource.manager import resource_manager
 from geonode.base.api.serializers import ResourceBaseSerializer
+from django.core.exceptions import ValidationError
 
 from geonode.views import (
     get_resource_size,
