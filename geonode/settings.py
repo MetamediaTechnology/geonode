@@ -955,7 +955,8 @@ ACCOUNT_LOGOUT_REDIRECT_URL = os.getenv('LOGOUT_REDIRECT_URL', SITEURL)
 ENABLE_CHECK_USER_STORAGE = ast.literal_eval(os.getenv('ENABLE_CHECK_USER_STORAGE', 'False'))
 
 # sphere Web service
-SPHERE_WEB_SERVICE_URL = os.getenv('SPHERE_WEB_SERVICE_URL','https://backend.sphere-dev.gistda.or.th/') 
+SPHERE_WEB_SERVICE_URL = os.getenv('SPHERE_WEB_SERVICE_URL','https://backend.sphere-dev.gistda.or.th/')
+SPHERE_MAIN_WEB = os.getenv('SPHERE_MAIN_WEB','https://sphere-dev.gistda.or.th/')
 
 # Backend
 DEFAULT_WORKSPACE = os.getenv('DEFAULT_WORKSPACE', 'geonode')
