@@ -9,7 +9,7 @@
 {% block body %}
   <div class="page-header">
     {% if user.is_authenticated and not READ_ONLY_MODE and user.is_superuser %}
-    <a href="{% url "group_create" %}" class="btn btn-primary pull-right">{% trans "Create a New Group" %}</a>
+    {% comment %} <a href="{% url "group_create" %}" class="btn btn-primary pull-right">{% trans "Create a New Group" %}</a> {% endcomment %}
     {% endif %}
     <h2>{% trans "Explore Groups" %}</h2>
   </div>

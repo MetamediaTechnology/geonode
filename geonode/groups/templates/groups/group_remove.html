@@ -1,7 +1,7 @@
 {% extends "groups/group_base.html" %}
 {% load i18n %}
 
-{% block title %}{{ group.title }} — {{ block.super }}{% endblock %}
+{% comment %} {% block title %}{{ group.title }} — {{ block.super }}{% endblock %}
 {% block body_class %}groups remove{% endblock %}
 
 {% block body %}
@@ -22,4 +22,15 @@
     </form>
   </div>
 </div>
-{% endblock %}
+{% endblock %} {% endcomment %}
+
+
+{% block extra_script %}
+      <script>
+         let baseUrl = window.location.origin
+         let redirectUrl = `${baseUrl.replaceAll('portal.','')}/admin-settings/general`
+         window.location.href = redirectUrl;
+      </script>
+      <p style="text-align:center">Web page redirects after 5 seconds.</p>
+
+{% endblock extra_script %}
