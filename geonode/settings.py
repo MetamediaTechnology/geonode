@@ -2295,13 +2295,13 @@ SUPPORTED_DATASET_FILE_TYPES = [
         'ext': ['json', 'geojson'],
         'optional': ['xml', 'sld']
     },
-    {
-        'id': 'kml',
-        'label': 'KML',
-        'format': 'vector',
-        'ext': ['kml'],
-        'optional': ['xml', 'sld']
-    }
+    # {
+    #     'id': 'kml',
+    #     'label': 'KML',
+    #     'format': 'vector',
+    #     'ext': ['kml'],
+    #     'optional': ['xml', 'sld']
+    # }
 ]
 
 INSTALLED_APPS += ('dynamic_models', 'importer', 'importer.handlers',)
