@@ -22,7 +22,11 @@
                 {% else %}
                     {% trans "Sign up with" %}
                 {% endif %}
-                {{provider.name}}
+                {% if provider.name == "Keycloak" %}
+                    sphere
+                {% else %}
+                    {{provider.name}}
+                {% endif %}
             </a>
         </div>
 {% endfor %}
