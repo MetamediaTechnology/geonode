@@ -1,8 +1,7 @@
 {% extends "groups/group_base.html" %}
 {% load i18n %}
-
+{% comment %} 
 {% block title %}{{ object.title|default:object.slug }} — {{ block.super }}{% endblock %}
-
 {% block head %}
   {% if TWITTER_CARD %}
     {% include "groups/_group_twittercard.html" %}
@@ -121,4 +120,14 @@
   {% with include_spatial='false' %}
   {% include 'search/search_scripts.html' %}
   {% endwith %}
-{% endblock extra_script %}
+{% endblock extra_script %} {% endcomment %}
+
+{% comment %} {% block extra_script %}
+      <script>
+         let baseUrl = window.location.origin
+         let redirectUrl = `${baseUrl.replaceAll('portal.','')}/admin-settings/general`
+         window.location.href = redirectUrl;
+      </script>
+      <p style="text-align:center">Web page redirects after 5 seconds.</p>
+
+{% endblock extra_script %} {% endcomment %}
