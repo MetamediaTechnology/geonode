@@ -295,7 +295,7 @@ def get_resource_size(uid,show_resources=0):
                         dataset_original_size = 0
                 else:
                     dataset_original_size = 0
-                if dataset_original_size == 0:
+                if dataset_original_size == 0 and upload_result[row][8] != '[]':
                     # try to search upload file path in base_resourcebase.files
                     cursor = connection.cursor()
                     cursor.execute(f"""SELECT files FROM base_resourcebase
@@ -308,7 +308,6 @@ def get_resource_size(uid,show_resources=0):
                             dataset_original_size = round(getFolderSize(path)/1048576.0,2)
                         except: # if can not find real path
                             dataset_original_size = 0
-                file_extension = os.path.splitext(os.path.basename(json.loads(upload_result[row][8])[0]))[1]
                 if upload_result[row][9] == 'vector': #and file_extension != '.gpkg':
                     try:
                         geoserver_table = upload_result[row][5].split(':')[1]
