@@ -25,15 +25,16 @@
           {% include "socialaccount/snippets/provider_list.html" with process="login" %}
         </ul>
 
-        <div class="login-or">{% trans 'or' %}</div>
+        <!-- <div class="login-or">{% trans 'or' %}</div> -->
       </div>
 
-      {% include "socialaccount/snippets/login_extra.html" %}
+      <!-- {% include "socialaccount/snippets/login_extra.html" %} -->
 
     {% else %}
       <p>{% blocktrans %}If you have not created an account yet, then please
       <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
     {% endif %}
+    <h4 style="margin: 40px 0px 10px 0px; font-weight: bold;">Sign in for Admin</h4>
     <form role="form" method="POST" action="{% url 'account_login' %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
       {% csrf_token %}
       {{ form|as_bootstrap }}
