@@ -44,6 +44,16 @@
     <link rel="preload" as="font" href="{% static "geonode/fonts/lato_bold.ttf" %}" crossorigin="" />
     <link rel="preload" as="font" href="{% static "geonode/fonts/lato_light.ttf" %}" crossorigin="" />
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZXKXJDN6ZZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-ZXKXJDN6ZZ');
+    </script>
+
     {% block head %}
 
       {% if DEBUG_STATIC %}
