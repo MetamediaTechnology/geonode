@@ -1358,6 +1358,7 @@ AUTO_GENERATE_AVATAR_SIZES = (
 AVATAR_GRAVATAR_SSL = ast.literal_eval(os.getenv('AVATAR_GRAVATAR_SSL', 'False'))
 
 AVATAR_DEFAULT_URL = os.getenv('AVATAR_DEFAULT_URL', '/geonode/img/avatar.png')
+AVATAR_GRAVATAR_DEFAULT = f'{SITEURL}static/geonode/img/user-default.png'
 
 try:
     # try to parse python notation, default in dockerized env
