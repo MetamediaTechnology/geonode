@@ -508,6 +508,11 @@ MARKDOWNIFY_STRIP = os.getenv('MARKDOWNIFY_STRIP', False)
 
 INSTALLED_APPS += GEONODE_APPS
 
+# Keycloak
+INSTALLED_APPS += (
+    'allauth.socialaccount.providers.keycloak', # changed
+)
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
@@ -1374,6 +1379,21 @@ if RECAPTCHA_ENABLED:
 
 GEONODE_CATALOGUE_METADATA_XSL = ast.literal_eval(os.getenv('GEONODE_CATALOGUE_METADATA_XSL', 'True'))
 
+if 'keycloaksync' not in INSTALLED_APPS:
+    INSTALLED_APPS += ('keycloaksync',)
+
+KEYCLOAK_URL= 'https://auth.logndo.com/auth'
+KEYCLOAK_CLIENT = 'marine-portal'
+KEYCLOAK_CLIENT_ID = '4fdd2257-055c-40c6-b80e-bf848c34656c'
+KEYCLOAK_CLIENT_SECRET = 'cJYajBCt66sNBoWWQqPTW9TtHcYxfNC5'
+KEYCLOAK_REALM = 'marine'
+KEYCLOAK_USER= False
+#KEYCLOAK_PASSWORD=''
+KEYCLOAK_USER_REALM='master'
+KEYCLOAK_GRANT_TYPE = 'client_credentials'
+KEYCLOAK_SCOPE = 'openid roles'
+KEYCLOAK_HOST_URL = 'https://auth.longdo.com'
+
 # -- START Client Hooksets Setup
 
 # GeoNode javascript client configuration
@@ -2023,6 +2043,8 @@ SOCIALACCOUNT_WITH_GEONODE_LOCAL_SINGUP = strtobool(os.environ.get('SOCIALACCOUN
 #    'allauth.socialaccount.providers.facebook',
 # )
 
+SOCIALACCOUNT_LOGIN_ON_GET=True
+
 SOCIALACCOUNT_PROVIDERS = {
     'linkedin_oauth2': {
         'SCOPE': [
@@ -2056,6 +2078,10 @@ SOCIALACCOUNT_PROVIDERS = {
             'link',
             'gender',
         ]
+    },
+    'keycloak': {
+        'KEYCLOAK_URL': 'https://auth.longdo.com/auth',
+        'KEYCLOAK_REALM': 'marine'
     },
 }
 

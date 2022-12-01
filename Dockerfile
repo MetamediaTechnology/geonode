@@ -72,6 +72,12 @@ RUN chmod +x /usr/bin/celery-cmd
 # # Install logstash and centralized dashboard dependencies
 # RUN cd /usr/src/geonode-contribs/geonode-logstash; pip install --upgrade  -e . \
 #     cd /usr/src/geonode-contribs/ldap; pip install --upgrade  -e .
+RUN cd /usr/src; git clone https://oauth2:Bt76BfDUfVfQHa44HqDx@git.longdo.com/map/geonode-contribs.git -b master
+
+# Install logstash and centralized dashboard dependencies
+RUN cd /usr/src/geonode-contribs/geonode-logstash; pip install --upgrade  -e . \
+    cd /usr/src/geonode-contribs/django-geonode-keycloak; pip install --upgrade  -e . \
+        cd /usr/src/geonode-contribs/keycloak-sync/src; pip install --upgrade -e .
 
 RUN pip install --upgrade --no-cache-dir  --src /usr/src -r requirements.txt
 RUN pip install --upgrade  -e .

@@ -186,6 +186,10 @@ urlpatterns += i18n_patterns(
     url(r'^admin/', admin.site.urls, name="admin"),
 )
 
+urlpatterns += [
+    url(r'^keycloaksync/', include('keycloaksync.urls', namespace='keycloaksync'))
+]
+
 # Internationalization Javascript
 urlpatterns += [
     url(r'^i18n/', include(django.conf.urls.i18n), name="i18n"),
