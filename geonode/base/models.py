@@ -1832,7 +1832,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                 url = storage_manager.url(upload_path)
                 try:
                     _default_banner_size = getattr(
-                        settings, 'THUMBNAIL_GENERATOR_DEFAULT_SIZE', {'width': 1200, 'height': 700})
+                        settings, 'BANNER_GENERATOR_DEFAULT_SIZE', {'width': 1200, 'height': 700})
                     im = Image.open(storage_manager.open(actual_name))
                     im.thumbnail(
                         (_default_banner_size['width'], _default_banner_size['height']),
