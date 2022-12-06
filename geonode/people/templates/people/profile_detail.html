@@ -132,7 +132,7 @@
       <i class="fa fa-map"></i> {% trans 'User layers WMS GetCapabilities document' %}</a></p>
   {% endif %}
 </div>
-
+{% comment %} 
 <div class="col-xs-12 col-md-3">
   <ul class="list-group">
       <li class="list-group-item"><a href="{% url "message_create" profile.pk %}"><i class="fa fa-paper-plane-o"></i> {% trans "Message User" %}</a></li>
@@ -180,7 +180,7 @@
       <li class="list-group-item"><a href="{% url "user-activity" profile.username %}"><i class="fa fa-fire"></i> {% trans "User Activities" %}</a></li>
     </ul>
   {% endif %}
-</div>
+</div> {% endcomment %}
 
 <div class="col-xs-12 col-md-9">
   <h4>{% trans "Resources" %}</h4>
