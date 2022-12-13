@@ -1554,34 +1554,43 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
         BASEMAP = {
             "type": "tileprovider",
             "title": "sphere streets",
-            "provider": "sphere",
+            "provider": "custom",
             "name": "sphere_streets",
             "group": "background",
             "visibility": True,
             "url": "https://basemap.sphere.gistda.or.th/tiles/sphere_streets/EPSG3857/{z}/{x}/{y}.png?key=" + f"{SPHERE_API_KEY}",
-            "thumbURL": "https://basemap.sphere.gistda.or.th/tiles/sphere_streets/EPSG3857/4/12/7.png?key=" + f"{SPHERE_API_KEY}"
+            "thumbURL": "https://basemap.sphere.gistda.or.th/tiles/sphere_streets/EPSG3857/4/12/7.png?key=" + f"{SPHERE_API_KEY}",
+            "options": {
+                "attribution": '&copy; <a href="https://sphere.gistda.or.th/terms">GISTDA sphere</a>'
+            }
         }
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
         BASEMAP = {
             "type": "tileprovider",
             "title": "sphere hybrid",
-            "provider": "sphere",
+            "provider": "custom",
             "name": "sphere_hybrid",
             "group": "background",
             "visibility": False,
             "url": "https://basemap.sphere.gistda.or.th/tiles/sphere_hybrid/EPSG3857/{z}/{x}/{y}.jpeg?key=" + f"{SPHERE_API_KEY}",
-            "thumbURL": "https://basemap.sphere.gistda.or.th/tiles/sphere_hybrid/EPSG3857/4/12/7.jpeg?key=" + f"{SPHERE_API_KEY}"
+            "thumbURL": "https://basemap.sphere.gistda.or.th/tiles/sphere_hybrid/EPSG3857/4/12/7.jpeg?key=" + f"{SPHERE_API_KEY}",
+            "options": {
+                "attribution": '&copy; <a href="https://sphere.gistda.or.th/terms">GISTDA sphere</a>'
+            }
         }
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
         BASEMAP = {
             "type": "tileprovider",
             "title": "sphere thailand",
-            "provider": "sphere",
+            "provider": "custom",
             "name": "thailand_images",
             "group": "background",
             "visibility": False,
             "url": "https://basemap.sphere.gistda.or.th/tiles/thailand_images/EPSG3857/{z}/{x}/{y}.jpeg?key=" + f"{SPHERE_API_KEY}",
-            "thumbURL": "https://basemap.sphere.gistda.or.th/tiles/thailand_images/EPSG3857/4/12/7.jpeg?key=" + f"{SPHERE_API_KEY}"
+            "thumbURL": "https://basemap.sphere.gistda.or.th/tiles/thailand_images/EPSG3857/4/12/7.jpeg?key=" + f"{SPHERE_API_KEY}",
+            "options": {
+                "attribution": '&copy; <a href="https://sphere.gistda.or.th/terms">GISTDA sphere</a>'
+            }
         }
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
 
