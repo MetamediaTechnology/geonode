@@ -115,8 +115,7 @@ def document_embed(request, docid):
             obj=document.get_self_resource()):
         return HttpResponse(
             loader.render_to_string(
-                '401.html', context={
-                    'error_message': _("You are not allowed to view this document.")}, request=request), status=401)
+                '401_sphere.html',request=request), status=401)
     if document.is_image:
         if document.doc_url:
             imageurl = document.doc_url
@@ -604,7 +603,7 @@ def document_metadata_detail(
             'view_resourcebase',
             _PERMISSION_MSG_METADATA)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        return render(request, '401_sphere.html')
     except Exception:
         raise Http404(_("Not found"))
     if not document:

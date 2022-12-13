@@ -1198,7 +1198,7 @@ def dataset_embed(
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+         return render(request, '401_sphere.html')
     except Exception:
         raise Http404(_("Not found"))
     if not layer:

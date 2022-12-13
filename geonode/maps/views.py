@@ -335,7 +335,7 @@ def map_embed(
             _PERMISSION_MSG_VIEW
         )
     except PermissionDenied:
-        return HttpResponse(MSG_NOT_ALLOWED, status=403)
+        return render(request, '401_sphere.html')
     except Exception:
         raise Http404(MSG_NOT_FOUND)
 
