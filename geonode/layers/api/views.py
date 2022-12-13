@@ -79,11 +79,16 @@ class DatasetViewSet(DynamicModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return DatasetListSerializer
-        if not self.request.user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
-            username = self.request.user
-            uid = get_uid(username=username)
-            size_after_upload = json.loads(get_resource_size(uid, 1))['total_size']['net']
-            update_userStorage(uid, size_after_upload)
+        username = self.request.user
+        uid = get_uid(username=username)
+        if settings.ENABLE_CHECK_USER_STORAGE:
+            if self.request.user.is_staff:
+                if uid is not None:
+                    size_after_upload = json.loads(get_resource_size(uid, 1))['total_size']['net']
+                    update_userStorage(uid, size_after_upload)
+            else:
+                size_after_upload = json.loads(get_resource_size(uid, 1))['total_size']['net']
+                update_userStorage(uid, size_after_upload)
         return DatasetSerializer
 
     @extend_schema(

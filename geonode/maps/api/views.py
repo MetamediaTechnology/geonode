@@ -139,9 +139,9 @@ class MapViewSet(DynamicModelViewSet):
         )
 
 
+        username = self.request.user
+        uid = get_uid(username=username)
         if not self.request.user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
-            username = self.request.user
-            uid = get_uid(username=username)
             is_able_upload = check_limit_size(uid, 0)
             if not is_able_upload:
                 raise ValidationError("Storage usage exceed limit.")
@@ -164,10 +164,14 @@ class MapViewSet(DynamicModelViewSet):
             if mapKey:
                 resource_manager.set_map_key(instance.uuid, instance=instance, overwrite=False,map_key=mapKey)
         
-
-        if not self.request.user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
-            size_after_update = json.loads(get_resource_size(uid, 1))['total_size']['net']
-            update_userStorage(uid, size_after_update)
+        if settings.ENABLE_CHECK_USER_STORAGE:
+            if self.request.user.is_staff:
+                if uid is not None:
+                    size_after_update = json.loads(get_resource_size(uid, 1))['total_size']['net']
+                    update_userStorage(uid, size_after_update)
+            else:
+                size_after_update = json.loads(get_resource_size(uid, 1))['total_size']['net']
+                update_userStorage(uid, size_after_update)
 
     def perform_update(self, serializer):
         # Check instance permissions with resolve_object
