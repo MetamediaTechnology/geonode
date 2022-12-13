@@ -1554,7 +1554,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
         BASEMAP = {
             "type": "tileprovider",
             "title": "sphere streets",
-            "provider": "custom",
+            "provider": "sphere",
             "name": "sphere_streets",
             "group": "background",
             "visibility": True,
@@ -1565,7 +1565,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
         BASEMAP = {
             "type": "tileprovider",
             "title": "sphere hybrid",
-            "provider": "custom",
+            "provider": "sphere",
             "name": "sphere_hybrid",
             "group": "background",
             "visibility": False,
@@ -1576,7 +1576,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
         BASEMAP = {
             "type": "tileprovider",
             "title": "sphere thailand",
-            "provider": "custom",
+            "provider": "sphere",
             "name": "thailand_images",
             "group": "background",
             "visibility": False,
