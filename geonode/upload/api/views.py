@@ -166,9 +166,9 @@ class UploadViewSet(DynamicModelViewSet):
             raise AuthenticationFailed()
 
         # Check file size
+        username = user.get_username()
+        uid = get_uid(username=username)
         if not user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
-            username = user.get_username()
-            uid = get_uid(username=username)
             file_name = request.FILES.get('base_file')
             file_size = 0
             if zipfile.is_zipfile(file_name):
@@ -177,7 +177,7 @@ class UploadViewSet(DynamicModelViewSet):
                 file_size = float(size)/1048576
             else:
                 for filename, file in request.FILES.items():
-                    if filename != 'shp_file':
+                    if filename != 'base_file':
                         file_size += request.FILES[filename].size/1048576.0
             # check limit size
             is_able_upload = check_limit_size(uid,file_size,'dataset')
@@ -202,9 +202,14 @@ class UploadViewSet(DynamicModelViewSet):
                     request,
                     step
                 )
-            if not user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
-                size_after_upload = json.loads(get_resource_size(uid, 1))['total_size']['net']
-                update_userStorage(uid, size_after_upload)
+            if settings.ENABLE_CHECK_USER_STORAGE:
+                if user.is_staff:
+                    if uid is not None:
+                        size_after_upload = json.loads(get_resource_size(uid, 1))['total_size']['net']
+                        update_userStorage(uid, size_after_upload)
+                else:
+                    size_after_upload = json.loads(get_resource_size(uid, 1))['total_size']['net']
+                    update_userStorage(uid, size_after_upload)
             return response
 
         # Upload steps defined by geonode.upload.utils._pages
@@ -216,9 +221,14 @@ class UploadViewSet(DynamicModelViewSet):
                 next_step
             )
             if is_final:
-                if not user.is_staff and settings.ENABLE_CHECK_USER_STORAGE:
-                    size_after_upload = json.loads(get_resource_size(uid, 1))['total_size']['net']
-                    update_userStorage(uid, size_after_upload)
+                if settings.ENABLE_CHECK_USER_STORAGE:
+                    if user.is_staff:
+                        if uid is not None:
+                            size_after_upload = json.loads(get_resource_size(uid, 1))['total_size']['net']
+                            update_userStorage(uid, size_after_upload)
+                    else:
+                        size_after_upload = json.loads(get_resource_size(uid, 1))['total_size']['net']
+                        update_userStorage(uid, size_after_upload)
                 return response
         # After performing 7 steps if we don't get any final response
         return response
