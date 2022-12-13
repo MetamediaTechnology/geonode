@@ -114,7 +114,7 @@ def geoapp_edit(request, geoappid, template='apps/app_edit.html'):
             'base.view_resourcebase',
             _PERMISSION_MSG_VIEW)
     except PermissionDenied:
-        return HttpResponse(_("Not allowed"), status=403)
+        return render(request, '401_sphere.html')
     except Exception:
         raise Http404(_("Not found"))
     if not geoapp_obj:
