@@ -1602,7 +1602,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
     ROUTE_API_URL = os.environ.get('ROUTE_API_URL', 'https://api.sphere-dev.gistda.or.th/services/route/route')
     SEARCH_API_URL = os.environ.get('SEARCH_API_URL', 'https://api.sphere-dev.gistda.or.th/services/search/search')
 
-    BASE_MAP_EXTEXT = {
+    BASE_MAP_EXTENT = {
         "type": "tileprovider",
         "title": "sphere streets",
         "provider": "custom",
