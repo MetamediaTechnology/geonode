@@ -1602,6 +1602,20 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
     ROUTE_API_URL = os.environ.get('ROUTE_API_URL', 'https://api.sphere-dev.gistda.or.th/services/route/route')
     SEARCH_API_URL = os.environ.get('SEARCH_API_URL', 'https://api.sphere-dev.gistda.or.th/services/search/search')
 
+    BASE_MAP_EXTEXT = {
+        "type": "tileprovider",
+        "title": "sphere streets",
+        "provider": "custom",
+        "name": "sphere_streets",
+        "group": "background",
+        "visibility": True,
+        "url": "https://basemap.sphere.gistda.or.th/tiles/sphere_streets/EPSG3857/{z}/{x}/{y}.png?key=" + f"{SPHERE_API_KEY}",
+        "thumbURL": "https://basemap.sphere.gistda.or.th/tiles/sphere_streets/EPSG3857/4/12/7.png?key=" + f"{SPHERE_API_KEY}",
+        "options": {
+            "attribution": '&copy; <a href="https://sphere.gistda.or.th/terms">GISTDA sphere</a>'
+        }
+    }
+
     MAPSTORE_DEFAULT_LANGUAGES = """(
         ('de-de', 'Deutsch'),
         ('en-us', 'English'),
