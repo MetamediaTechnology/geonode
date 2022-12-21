@@ -1619,17 +1619,16 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "visibility": False
         }
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
-    
-    if GOOGLE_API_KEY:
-        BASEMAP = {
-            "type": "google",
-            "title": "Google HYBRID",
-            "name": "HYBRID",
-            "source": "google",
-            "group": "background",
-            "visibility": False
-        }
-        DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
+
+    BASEMAP = {
+        "type": "google",
+        "title": "Google HYBRID",
+        "name": "HYBRID",
+        "source": "google",
+        "group": "background",
+        "visibility": False
+    }
+    DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
     
     if LONGDO_API_KEY:
         BASEMAP = {
