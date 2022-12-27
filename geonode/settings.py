@@ -255,6 +255,7 @@ ROOT_URLCONF = os.getenv('ROOT_URLCONF', 'geonode.urls')
 STATICFILES_LOCATION = 'static'
 MEDIAFILES_LOCATION = 'uploaded'
 THUMBNAIL_LOCATION = 'thumbs'
+BANNER_LOCATION = 'banners'
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -920,6 +921,11 @@ LOGOUT_URL = os.getenv('LOGOUT_URL', f'{SITEURL}account/logout/')
 
 ACCOUNT_LOGIN_REDIRECT_URL = os.getenv('LOGIN_REDIRECT_URL', SITEURL)
 ACCOUNT_LOGOUT_REDIRECT_URL = os.getenv('LOGOUT_REDIRECT_URL', SITEURL)
+
+ENABLE_CHECK_USER_STORAGE = ast.literal_eval(os.getenv('ENABLE_CHECK_USER_STORAGE', 'False'))
+
+# sphere Web service
+SPHERE_WEB_SERVICE_URL = os.getenv('SPHERE_WEB_SERVICE_URL','https://thaimap-backend.longdo.com/') 
 
 # Backend
 DEFAULT_WORKSPACE = os.getenv('DEFAULT_WORKSPACE', 'geonode')
@@ -1647,9 +1653,13 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
     # MAPSTORE_BASELAYERS_SOURCES allow to configure tilematrix sets for wmts layers
     MAPSTORE_BASELAYERS_SOURCES = os.environ.get('MAPSTORE_BASELAYERS_SOURCES', {})
 
+    MAP_API_URL = os.environ.get('MAP_API_URL', 'https://api.longdo.com/map/')
+    ROUTE_API_URL = os.environ.get('ROUTE_API_URL', 'https://api.longdo.com/RouteService/geojson/route')
+    SEARCH_API_URL = os.environ.get('SEARCH_API_URL', 'https://search.longdo.com/mapsearch/json/search/')
+
     MAPSTORE_DEFAULT_LANGUAGES = """(
         ('th-th', 'ไทย'),
-        ('en-us', 'English'),
+        ('en-us', 'English')
     )"""
 
     LANGUAGES = ast.literal_eval(os.getenv('LANGUAGES', MAPSTORE_DEFAULT_LANGUAGES))

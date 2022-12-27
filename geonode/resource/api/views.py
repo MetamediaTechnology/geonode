@@ -19,6 +19,8 @@
 import json
 import logging
 
+from django.conf import settings
+
 from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
 from dynamic_rest.viewsets import WithDynamicViewSetMixin
 from geonode.base.api.filters import DynamicSearchFilter
@@ -140,6 +142,17 @@ class ExecutionRequestViewset(WithDynamicViewSetMixin, ListModelMixin, RetrieveM
     http_method_names = ['get', 'delete']
 
     def get_queryset(self, queryset=None):
+        user = self.request.user
+        username = user.get_username()
+        uid = get_uid(username=username)
+        if settings.ENABLE_CHECK_USER_STORAGE:
+            if user.is_staff:
+                if uid is not None:
+                    size_after_upload = json.loads(get_resource_size(uid, 1))['total_size']['net']
+                    update_userStorage(uid, size_after_upload)
+            else:
+                size_after_upload = json.loads(get_resource_size(uid, 1))['total_size']['net']
+                update_userStorage(uid, size_after_upload)
         return ExecutionRequest.objects.filter(user=self.request.user).order_by('pk')
 
     def delete(self, *args, **kwargs):

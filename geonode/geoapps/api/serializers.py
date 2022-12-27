@@ -18,12 +18,14 @@
 #########################################################################
 import logging
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from geonode.geoapps.api.exceptions import DuplicateGeoAppException, InvalidGeoAppException, GeneralGeoAppException
 
 from geonode.geoapps.models import GeoApp
 from geonode.resource.manager import resource_manager
 from geonode.base.api.serializers import ResourceBaseSerializer
+from django.core.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
 

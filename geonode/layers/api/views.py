@@ -16,6 +16,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
+from django.conf import settings
+
 from urllib.request import Request
 from drf_spectacular.utils import extend_schema, OpenApiExample
 

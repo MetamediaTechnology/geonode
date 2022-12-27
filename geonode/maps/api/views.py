@@ -17,8 +17,10 @@
 #
 #########################################################################
 import logging
+from urllib import request
 from uuid import uuid4
 
+from django.conf import settings
 from django.db import transaction
 from drf_spectacular.utils import extend_schema
 from dynamic_rest.filters import DynamicFilterBackend, DynamicSortingFilter
@@ -113,6 +115,12 @@ class MapViewSet(DynamicModelViewSet):
         # Thumbnail will be handled later
         post_creation_data = {"thumbnail": serializer.validated_data.pop("thumbnail_url", "")}
 
+        # XSS basic protect and is not standard - if concern please replace this line 129 - 132. Thanks
+        appName = self.request.data['title']
+        if appName.find("<script>") != -1 or appName.find('javascript') != -1:
+            print(appName)
+            raise ValidationError("XSS Dectection")
+
         instance = serializer.save(
             owner=self.request.user,
             resource_type="map",
@@ -125,6 +133,7 @@ class MapViewSet(DynamicModelViewSet):
             create_action_perfomed=True,
             additional_data=post_creation_data,
         )
+
         # Handle thumbnail generation
         resource_manager.set_thumbnail(instance.uuid, instance=instance, overwrite=False)
 

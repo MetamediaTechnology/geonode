@@ -23,6 +23,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.template.defaultfilters import slugify
 from django.shortcuts import redirect
+from django.conf import settings
 
 from geonode.security.permissions import DEFAULT_PERMS_SPEC
 

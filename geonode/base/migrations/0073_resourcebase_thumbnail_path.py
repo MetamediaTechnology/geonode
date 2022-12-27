@@ -14,5 +14,5 @@ class Migration(migrations.Migration):
             model_name='resourcebase',
             name='thumbnail_path',
             field=models.TextField(blank=True, null=True, verbose_name='Thumbnail path'),
-        ),
+        )
     ]

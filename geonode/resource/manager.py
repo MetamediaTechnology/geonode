@@ -22,6 +22,8 @@ import copy
 import typing
 import logging
 import importlib
+import datetime
+
 
 from uuid import uuid1, uuid4
 from abc import ABCMeta, abstractmethod
@@ -202,7 +204,6 @@ class ResourceManagerInterface(metaclass=ABCMeta):
     def set_thumbnail(self, uuid: str, /, instance: ResourceBase = None, overwrite: bool = True, check_bbox: bool = True) -> bool:
         """Allows to generate or re-generate the Thumbnail of a Resource."""
         pass
-
 
 class ResourceManager(ResourceManagerInterface):
 
@@ -824,6 +825,30 @@ class ResourceManager(ResourceManagerInterface):
             except Exception as e:
                 logger.exception(e)
         return False
+    def set_banner(self, uuid: str, /, instance: ResourceBase = None, overwrite: bool = True, check_bbox: bool = True, banner=None) -> bool:
+        _resource = instance or ResourceManager._get_instance(uuid)
+        if _resource:
+            try:
+                with transaction.atomic():
+                    if banner:
+                        file_name = _generate_thumbnail_name(_resource.get_real_instance())
+                        _resource.save_banner(file_name, banner)
+                    else:
+                       if instance and instance.files and isinstance(instance.get_real_instance(), Document):
+                            if overwrite or not instance.banner_url:
+                                create_document_thumbnail.apply((instance.id,))
+                       self._concrete_resource_manager.set_banner(uuid, instance=_resource, overwrite=overwrite, check_bbox=check_bbox)
+                return True
+            except Exception as e:
+                logger.exception(e)
+        return False
+    def set_map_key(self, uuid: str, /, instance: ResourceBase = None,overwrite: bool = True,map_key="") -> bool:
+        _resource = instance or ResourceManager._get_instance(uuid)
+        _resource.set_map_key(map_key)
+        return True
+
+
+
 
 
 resource_manager = ResourceManager()

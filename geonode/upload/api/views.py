@@ -34,6 +34,7 @@ from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 
 from django.shortcuts import reverse
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
 from geonode.base.api.filters import DynamicSearchFilter
 from geonode.base.api.permissions import IsOwnerOrReadOnly, IsSelfOrAdminOrReadOnly

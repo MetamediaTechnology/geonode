@@ -16,6 +16,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
+from dataclasses import field
 import json
 from slugify import slugify
 from urllib.parse import urljoin
@@ -229,7 +230,6 @@ class LicenseSerializer(DynamicModelSerializer):
         name = 'License'
         fields = ('identifier',)
 
-
 class SpatialRepresentationTypeSerializer(DynamicModelSerializer):
 
     class Meta:
@@ -302,6 +302,24 @@ class ThumbnailUrlField(DynamicComputedField):
 
         return build_absolute_uri(thumbnail_url)
 
+class BannerUrlField(DynamicComputedField):
+    
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def get_attribute(self, instance):
+        banner_url = instance.banner_url
+
+        return build_absolute_uri(banner_url)
+
+class MapKeyField(DynamicComputedField):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def get_attribute(self, instance):
+        map_key = instance.map_key
+
+        return map_key
 
 class DownloadLinkField(DynamicComputedField):
     def __init__(self, **kwargs):
@@ -491,6 +509,8 @@ class ResourceBaseSerializer(
 
         self.fields['embed_url'] = EmbedUrlField(required=False)
         self.fields['thumbnail_url'] = ThumbnailUrlField(read_only=True)
+        self.fields['banner_url'] = BannerUrlField(read_only=True)
+        self.fields['map_key'] = MapKeyField(read_only=True)
         self.fields['keywords'] = DynamicRelationField(
             SimpleHierarchicalKeywordSerializer, embed=False, many=True)
         self.fields['tkeywords'] = DynamicRelationField(
