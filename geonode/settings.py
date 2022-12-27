@@ -1382,7 +1382,7 @@ GEONODE_CATALOGUE_METADATA_XSL = ast.literal_eval(os.getenv('GEONODE_CATALOGUE_M
 if 'keycloaksync' not in INSTALLED_APPS:
     INSTALLED_APPS += ('keycloaksync',)
 
-KEYCLOAK_URL= 'https://auth.logndo.com/auth'
+KEYCLOAK_URL= 'https://auth.longdo.com/auth'
 KEYCLOAK_CLIENT = 'marine-portal'
 KEYCLOAK_CLIENT_ID = '4fdd2257-055c-40c6-b80e-bf848c34656c'
 KEYCLOAK_CLIENT_SECRET = 'cJYajBCt66sNBoWWQqPTW9TtHcYxfNC5'
