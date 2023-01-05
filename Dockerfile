@@ -82,6 +82,8 @@ RUN cd /usr/src/geonode-contribs/geonode-logstash; pip install --upgrade  -e . \
 RUN pip install --upgrade --no-cache-dir  --src /usr/src -r requirements.txt
 RUN pip install --upgrade  -e .
 
+RUN pip install --force-reinstall "cryptography==38.0.4"
+
 # Cleanup apt update lists
 RUN rm -rf /var/lib/apt/lists/*
 
