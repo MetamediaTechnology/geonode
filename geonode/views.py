@@ -287,6 +287,7 @@ def get_resource_size(uid,show_resources=0):
         original_size = 0
         database_size = 0
         for row in range(len(upload_result)):
+            is_table_exist = False
             if upload_result[row][4] == 'dataset':
                 if upload_result[row][6]:
                     try:
@@ -311,17 +312,24 @@ def get_resource_size(uid,show_resources=0):
                 if upload_result[row][9] == 'vector': #and file_extension != '.gpkg':
                     try:
                         geoserver_table = upload_result[row][5].split(':')[1]
-                        cur.execute(f"SELECT pg_total_relation_size('\"{geoserver_table}\"')")
-                        dataset_db_size = round(cur.fetchall()[0][0]/1048576.0,2)
-                    except:
-                        dataset_db_size = 0
-                        try:
-                            if geoserver_table[0:2] == 'a_':
-                                geoserver_table = geoserver_table[2:]
+                        cur.execute(f"SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename  = '{geoserver_table}');")
+                        is_table_exist = cur.fetchone()[0]
+                        if is_table_exist:
+                            cur.execute(f"SELECT pg_total_relation_size('\"{geoserver_table}\"')")
+                            dataset_db_size = round(cur.fetchall()[0][0]/1048576.0,2)
+                        elif geoserver_table[0:2] == 'a_':
+                            geoserver_table = geoserver_table[2:]
+                            cur.execute(f"SELECT EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename  = '{geoserver_table}');")
+                            is_table_exist = cur.fetchone()[0]
+                            if is_table_exist:
                                 cur.execute(f"SELECT pg_total_relation_size('\"{geoserver_table}\"')")
                                 dataset_db_size = round(cur.fetchall()[0][0]/1048576.0,2)
-                        except:
+                            else:
+                                dataset_db_size = 0
+                        else:
                             dataset_db_size = 0
+                    except:
+                        dataset_db_size = 0
                 else:
                     dataset_db_size = 0
                 dataset_url = os.environ['SITEURL'] + 'catalogue/#/dataset/' + str(upload_result[row][2])

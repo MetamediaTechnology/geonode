@@ -1156,7 +1156,8 @@ class ResourceBaseViewSet(DynamicModelViewSet):
                 input_params={
                     "instance": resource.id,
                     "owner": request_params.get('owner', request.user.username),
-                    "defaults": request_params.get('defaults', '{}')
+                    "defaults": request_params.get('defaults', '{}'),
+                    "uid": request.user.id
                 }
             )
             resouce_service_dispatcher.apply_async((_exec_request.exec_id,))
