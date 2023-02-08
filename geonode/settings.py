@@ -24,6 +24,7 @@ import ast
 import sys
 import subprocess
 import dj_database_url
+import requests
 from schema import Optional
 from datetime import timedelta
 from distutils.util import strtobool  # noqa
@@ -1425,6 +1426,7 @@ MAPBOX_ACCESS_TOKEN = os.environ.get('MAPBOX_ACCESS_TOKEN', None)
 BING_API_KEY = os.environ.get('BING_API_KEY', None)
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)
 LONGDO_API_KEY = os.environ.get('LONGDO_API_KEY', None)
+NOSTRA_API_KEY = os.environ.get('NOSTRA_API_KEY', None)
 
 GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY = os.getenv('GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY', 'mapstore')
 
@@ -1648,6 +1650,24 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "thumbURL": "https://ms.longdo.com/mmmap/tile.php?proj=epsg3857&mode=icons&zoom=4&x=12&y=7&HD=0&key=" + f"{LONGDO_API_KEY}"
         }
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
+
+    if NOSTRA_API_KEY:
+        URL = "https://api.nostramap.com/Service/V2/Map/GetPermission?key=" + f"{NOSTRA_API_KEY}"
+        r = requests.get(url = URL)
+        data = r.json()
+        for result in data['results']:
+            if result['serviceName'] == 'NOSTRA Thailand Map':
+                BASEMAP = {
+                    "type": "tileprovider",
+                    "title": "NOSTRA Map",
+                    "provider": "custom",
+                    "name": "nostra_thailand_map",
+                    "group": "background",
+                    "visibility": False,
+                    "url": f"{result['serviceURL_L']}" + "/tile/{z}/{x}/{y}?token=" + f"{result['serviceToken_L']}",
+                    "thumbURL": f"{result['serviceURL_L']}" + "/tile/4/12/7?token=" + f"{result['serviceToken_L']}"
+                }
+                DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
 
     MAPSTORE_BASELAYERS = DEFAULT_MS2_BACKGROUNDS
     # MAPSTORE_BASELAYERS_SOURCES allow to configure tilematrix sets for wmts layers
