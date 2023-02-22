@@ -2388,7 +2388,7 @@ msgid "Select the charset or leave default"
 msgstr "เลือกชุดอักขระหรือใช้ค่าเริ่มต้น"
 
 msgid "Home"
-msgstr "บ้าน"
+msgstr "หน้าแรก"
 
 msgid "Change point of contact"
 msgstr "เปลี่ยนที่อยู่สำหรับติดต่อ"
