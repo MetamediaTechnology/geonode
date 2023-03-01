@@ -1747,7 +1747,7 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                 try:
                     # Optimize the Thumbnail size and resolution
                     _default_thumb_size = getattr(
-                        settings, 'THUMBNAIL_GENERATOR_DEFAULT_SIZE', {'width': 240, 'height': 200})
+                        settings, 'THUMBNAIL_GENERATOR_DEFAULT_SIZE', {'width': 1000, 'height': 1000})
                     im = Image.open(storage_manager.open(actual_name))
                     im.thumbnail(
                         (_default_thumb_size['width'], _default_thumb_size['height']),
@@ -1832,15 +1832,14 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin, ItemBase):
                 url = storage_manager.url(upload_path)
                 try:
                     _default_banner_size = getattr(
-                        settings, 'THUMBNAIL_GENERATOR_DEFAULT_SIZE', {'width': 1200, 'height': 700})
+                        settings, 'BANNER_GENERATOR_DEFAULT_SIZE', {'width': 1200, 'height': 700})
                     im = Image.open(storage_manager.open(actual_name))
                     im.thumbnail(
                         (_default_banner_size['width'], _default_banner_size['height']),
                         resample=Image.ANTIALIAS)
-                    cover = ImageOps.fit(im, (_default_banner_size['width'], _default_banner_size['height']))
-
+                    # cover = ImageOps.fit(im, (_default_banner_size['width'], _default_banner_size['height']))
+                    cover = ImageOps.fit(im)
                     tmp_location = os.path.abspath(f"{settings.MEDIA_ROOT}/{upload_path}")
-                    print(tmp_location)
                     cover.save(tmp_location, format='PNG')
 
                     with open(tmp_location, 'rb+') as img:
