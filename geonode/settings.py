@@ -538,6 +538,11 @@ MARKDOWNIFY_STRIP = os.getenv('MARKDOWNIFY_STRIP', False)
 
 INSTALLED_APPS += GEONODE_APPS
 
+# Keycloak
+INSTALLED_APPS += (
+    'allauth.socialaccount.providers.keycloak',
+)
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
@@ -1412,6 +1417,20 @@ if RECAPTCHA_ENABLED:
 
 GEONODE_CATALOGUE_METADATA_XSL = ast.literal_eval(os.getenv('GEONODE_CATALOGUE_METADATA_XSL', 'True'))
 
+if 'keycloaksync' not in INSTALLED_APPS:
+    INSTALLED_APPS += ('keycloaksync',)
+KEYCLOAK_URL= 'https://auth.longdo.com/auth'
+KEYCLOAK_CLIENT = 'geonode-longdo'
+KEYCLOAK_CLIENT_ID = 'd66123a1-2bc4-4064-97a2-09b3d1b8c54b'
+KEYCLOAK_CLIENT_SECRET = 'xV4qXmvgkSTqdd62C41SaNwVbdiEfYlC'
+KEYCLOAK_REALM = 'Longdo'
+KEYCLOAK_USER= False
+#KEYCLOAK_PASSWORD=''
+KEYCLOAK_USER_REALM='master'
+KEYCLOAK_GRANT_TYPE = 'client_credentials'
+KEYCLOAK_SCOPE = 'openid roles'
+KEYCLOAK_HOST_URL = 'https://auth.longdo.com'
+
 # -- START Client Hooksets Setup
 
 # GeoNode javascript client configuration
@@ -1436,6 +1455,7 @@ DEFAULT_MAP_ZOOM = int(os.environ.get('DEFAULT_MAP_ZOOM', 0))
 MAPBOX_ACCESS_TOKEN = os.environ.get('MAPBOX_ACCESS_TOKEN', None)
 BING_API_KEY = os.environ.get('BING_API_KEY', None)
 GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY', None)
+LONGDO_API_KEY = os.environ.get('LONGDO_API_KEY', None)
 
 GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY = os.getenv('GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY', 'mapstore')
 
@@ -1486,7 +1506,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "name": "mapnik",
             "source": "osm",
             "group": "background",
-            "visibility": True
+            "visibility": False if LONGDO_API_KEY else True
         }, {
             "type": "tileprovider",
             "title": "OpenTopoMap",
@@ -1527,7 +1547,7 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
             "source": "streets-v11",
             "thumbURL": f"https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/6/33/23?access_token={MAPBOX_ACCESS_TOKEN}",  # noqa
             "group": "background",
-            "visibility": True
+            "visibility": False
         }
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
 
@@ -1543,11 +1563,36 @@ if GEONODE_CLIENT_LAYER_PREVIEW_LIBRARY == 'mapstore':
         }
         DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
 
+    if GOOGLE_API_KEY:
+        BASEMAP = {
+            "type": "google",
+            "title": "Google HYBRID",
+            "name": "HYBRID",
+            "source": "google",
+            "group": "background",
+            "visibility": False
+        }
+        DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
+    
+    if LONGDO_API_KEY:
+        BASEMAP = {
+            "type": "tileprovider",
+            "title": "Longdo Map",
+            "provider": "custom",
+            "name": "longdo_map_normal",
+            "group": "background",
+            "visibility": True,
+            "url": "https://ms.longdo.com/mmmap/tile.php?proj=epsg3857&mode=normal&zoom={z}&x={x}&y={y}&HD=0&key=" + f"{LONGDO_API_KEY}",
+            "thumbURL": "https://ms.longdo.com/mmmap/tile.php?proj=epsg3857&mode=normal&zoom=4&x=12&y=7&HD=0&key=" + f"{LONGDO_API_KEY}"
+        }
+        DEFAULT_MS2_BACKGROUNDS = [BASEMAP, ] + DEFAULT_MS2_BACKGROUNDS
+
     MAPSTORE_BASELAYERS = DEFAULT_MS2_BACKGROUNDS
     # MAPSTORE_BASELAYERS_SOURCES allow to configure tilematrix sets for wmts layers
     MAPSTORE_BASELAYERS_SOURCES = os.environ.get('MAPSTORE_BASELAYERS_SOURCES', {})
 
     MAPSTORE_DEFAULT_LANGUAGES = """(
+        ('th-th', 'ไทย'),
         ('de-de', 'Deutsch'),
         ('en-us', 'English'),
         ('es-es', 'Español'),
@@ -1957,6 +2002,8 @@ SOCIALACCOUNT_WITH_GEONODE_LOCAL_SINGUP = strtobool(os.environ.get('SOCIALACCOUN
 #    'allauth.socialaccount.providers.facebook',
 # )
 
+SOCIALACCOUNT_LOGIN_ON_GET=True
+
 SOCIALACCOUNT_PROVIDERS = {
     'linkedin_oauth2': {
         'SCOPE': [
@@ -1990,6 +2037,10 @@ SOCIALACCOUNT_PROVIDERS = {
             'link',
             'gender',
         ]
+    },
+    'keycloak': {
+        'KEYCLOAK_URL': 'https://auth.longdo.com/auth',
+        'KEYCLOAK_REALM': 'Longdo'
     },
 }
 
@@ -2233,5 +2284,44 @@ SUPPORTED_DATASET_FILE_TYPES = [
         "ext": ["sld"],
         "mimeType": ["application/json"],
         "needsFiles": ["shp", "prj", "dbf", "shx", "csv", "tiff", "zip", "xml"]
+    },
+    {
+        'id': 'gpkg',
+        'label': 'GeoPackage',
+        'format': 'archive',
+        'ext': ['gpkg']
+    },
+    {
+        'id': 'geojson',
+        'label': 'GeoJson',
+        'format': 'metadata',
+        'ext': ['json', 'geojson'],
+        'optional': ['xml', 'sld']
+    },
+    {
+        'id': 'kml',
+        'label': 'KML',
+        'format': 'vector',
+        'ext': ['kml'],
+        'optional': ['xml', 'sld']
     }
 ]
+
+INSTALLED_APPS += ('dynamic_models', 'importer', 'importer.handlers',)
+
+CELERY_TASK_QUEUES += (
+    Queue('importer.import_orchestrator', GEONODE_EXCHANGE, routing_key='importer.import_orchestrator'),
+    Queue('importer.import_resource', GEONODE_EXCHANGE, routing_key='importer.import_resource', max_priority=8),
+    Queue('importer.publish_resource', GEONODE_EXCHANGE, routing_key='importer.publish_resource', max_priority=8),
+    Queue('importer.create_geonode_resource', GEONODE_EXCHANGE, routing_key='importer.create_geonode_resource', max_priority=8),
+    Queue('importer.import_with_ogr2ogr', GEONODE_EXCHANGE, routing_key='importer.import_with_ogr2ogr', max_priority=10),
+    Queue('importer.import_next_step', GEONODE_EXCHANGE, routing_key='importer.import_next_step', max_priority=3),
+    Queue('importer.create_dynamic_structure', GEONODE_EXCHANGE, routing_key='importer.create_dynamic_structure', max_priority=10),
+    Queue('importer.copy_geonode_resource', GEONODE_EXCHANGE, routing_key='importer.copy_geonode_resource', max_priority=0),
+    Queue('importer.copy_dynamic_model', GEONODE_EXCHANGE, routing_key='importer.copy_dynamic_model'),
+    Queue('importer.copy_geonode_data_table', GEONODE_EXCHANGE, routing_key='importer.copy_geonode_data_table'),
+)
+
+DATABASE_ROUTERS = ["importer.db_router.DatastoreRouter"]
+
+SIZE_RESTRICTED_FILE_UPLOAD_ELEGIBLE_URL_NAMES += ('importer_upload',)
