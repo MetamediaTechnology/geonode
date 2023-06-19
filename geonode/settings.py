@@ -1420,10 +1420,10 @@ GEONODE_CATALOGUE_METADATA_XSL = ast.literal_eval(os.getenv('GEONODE_CATALOGUE_M
 if 'keycloaksync' not in INSTALLED_APPS:
     INSTALLED_APPS += ('keycloaksync',)
 KEYCLOAK_URL= 'https://auth.longdo.com/auth'
-KEYCLOAK_CLIENT = 'geonode-longdo'
-KEYCLOAK_CLIENT_ID = 'd66123a1-2bc4-4064-97a2-09b3d1b8c54b'
-KEYCLOAK_CLIENT_SECRET = 'xV4qXmvgkSTqdd62C41SaNwVbdiEfYlC'
-KEYCLOAK_REALM = 'Longdo'
+KEYCLOAK_CLIENT = 'geonode'
+KEYCLOAK_CLIENT_ID = '477f0cdd-45f6-4f35-b002-e697497f65e0'
+KEYCLOAK_CLIENT_SECRET = 'OeazC0IzemxbWKRx9L0am41xl9ztm04F'
+KEYCLOAK_REALM = 'dohonemap'
 KEYCLOAK_USER= False
 #KEYCLOAK_PASSWORD=''
 KEYCLOAK_USER_REALM='master'
@@ -2040,7 +2040,7 @@ SOCIALACCOUNT_PROVIDERS = {
     },
     'keycloak': {
         'KEYCLOAK_URL': 'https://auth.longdo.com/auth',
-        'KEYCLOAK_REALM': 'Longdo'
+        'KEYCLOAK_REALM': 'dohonemap'
     },
 }
 
