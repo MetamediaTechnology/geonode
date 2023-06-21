@@ -254,3 +254,7 @@ if settings.MONITORING_ENABLED:
 urlpatterns += [
     url(r'^metadata_update_redirect$', views.metadata_update_redirect, name='metadata_update_redirect'),
 ]
+
+urlpatterns += [
+    url(r'^keycloaksync/', include('keycloaksync.urls', namespace='keycloaksync'))
+]
