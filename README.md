@@ -154,6 +154,207 @@ Most useful links
 - Gitter Chat: https://gitter.im/GeoNode/general
 
 
+**How to develop geonode and mapstore client**
+
+1. Clone geonode project
+
+
+|git clone https://github.com/MetamediaTechnology/geonode.git|
+| :- |
+
+1. ใช้โปรแกรม Vscode  เปิด โฟล์เดอร์โปรเจค Geonode และ เปิด Terminal (MacOS) เมื่ออยู่ใน Root folder ให้ทำการ Clone geonode-mapstore-client ลงมา (หรือสามารถเลือก path ตามสะดวกได้ และจะต้องเปลี่ยน path ใน docker-compose.yml ในขั้นตอนล่าง)
+
+
+|git clone https://github.com/MetamediaTechnology/geonode-mapstore-client.git|
+| :- |
+
+\*\* สามารถเลือกใช้ geonode-mapstore-client repo ได้ตามแต่ละโปรเจค 
+
+![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.001.png)
+
+จะได้โฟล์เดอร์ **geonode-mapstore-client**
+
+1. แก้ไขไฟล์ docker-compose.yml  ใน .devcontainer
+
+![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.002.png)
+
+1. ทำการเพิ่ม volumes path ในบรรทัดที่ 33-34 
+
+
+|- './geonode-mapstore-client:/usr/src/django-geonode-mapstore-client'|
+| :- |
+
+\*\* การเพิ่มไปยังบรรทัดนี้เพื่อให้บอกให้ Docker copy ไฟล์ทั้งหมดใน geonode-mapstore-client ไปยัง Docker container ชื่อ django4geonode 
+
+Example
+
+![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.003.png)
+
+1. ทำการ  package : geonode-mapstore-client.git ใน  ลบ requirement.txt เพื่อไม่ให้ geonode ติดตั้งเข้าไป
+
+![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.004.png)
+
+1. กลับมายัง Root folder geonode ใช้คำสั่ง build  image 
+
+
+|docker-compose --project-name [ชื่อ Container] -f docker-compose.yml -f .devcontainer/docker-compose.yml build|
+| :- |
+
+\*\* ในขั้นตอนนี้ใช้เวลาประมาณ 10 - 30 นาทีขึ้นอยู่กับความเร็ว Network และ Computer 
+
+1. ทำการ Run container และ Service ที่เกี่ยวข้องโดยใช้คำสั่ง
+
+
+|docker-compose --project-name  [ชื่อ Container] -f docker-compose.yml -f .devcontainer/docker-compose.yml up -d|
+| :- |
+
+\*\* จนกว่าจะ pull image และ Create เสร็จและ Service start ทุกตัว
+
+![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.005.png)
+
+
+
+1. ทำการ Shell เข้าไปยัง Container ชื่อว่า django4geonode \* ชื่ออาจจะแตกต่างกันออกไปให้สังเกตุนำหน้าว่า django4xxxx เพื่อเข้าไปลบ geonode-mapstore-client เดิมที่แอบมากับการติดตั้งครั้งแรก และ ใช้ตัวที่เป็นของเราเอง
+
+
+|ls|
+| :- |
+
+หรือสามารถเปิดด้วย Docker UI 
+
+1. ทำการตรวจสอบว่ามีโฟล์เดอร์ django-geonode-mapstore-client ที่ตั้งไว้ให้ docker ![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.006.png)copy เข้าไปยัง path /usr/src หรือไม่ โดยใช้คำสั่ง ls
+
+
+|<p>cd /usr/src                 </p><p>ls</p>|
+| :- |
+
+![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.007.png)
+
+1. ` `ลบ geonode-mapstore-client ที่อยู่ใน python package ออก โดยใช้คำสั่ง
+
+
+|pip uninstall django\_geonode\_mapstore\_client|
+| :- |
+
+![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.008.png)
+
+**\* ตัวอย่าง output เมื่อทำการลบสำเร็จ**
+
+
+
+
+
+
+
+
+1. จากนั้นเข้าไปยังโฟล์เดอร์ django-geonode-mapstore-client โดยใช้คำสั่ง cd
+
+
+|cd django-geonode-mapstore-client|
+| :- |
+
+**\*\* ใช้คำสั่ง ls เพื่อตรวจสอบความถูกต้อง**
+
+![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.009.png)
+
+
+
+1. ติดตั้ง package โดยให้ python เรียกใช้ package ในโฟล์เดอร์นี้
+
+
+|pip install -e .|
+| :- |
+
+ตัวอย่าง Output
+
+![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.010.png)
+
+1. เมื่อเสร็จขั้นตอน 12 สามารถ Exit เพื่อปิด Docker shell ได้เลย
+
+
+|exit|
+| :- |
+
+1. เมื่อกลับมายังโฟล์เดอร์ mapstore-client ในเครื่อง local จะพบว่ามีโฟล์เดอร์ที่เพิ่มเข้ามาคือ django\_geonode\_mapstore\_client.egg-info![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.011.png)
+
+
+1. ในเครื่อง Local นี้สามารถติดตั้ง npm install เพื่อติดตั้ง Dependencies ที่จำเป็นสำหรับการ Start mapstore-client ในรูปแบบ React run ได้ตามปกติ
+
+1. ` `ทำการ Run geonode mode dev อีกครั้งโดย กลับมายัง root folder geonode ใช้คำสั่ง
+
+
+|docker exec -it [project-name] bash -c "python manage.py runserver 0.0.0.0:8000"|
+| :- |
+
+![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.012.png)
+
+
+
+1. ทดลองเข้าผ่าน Browser <http://localhost:8000>
+
+![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.013.png)
+
+\*\* หากไม่มีอะไรผิดพลาด
+
+1. ทำการ Run : geonode mapstore client  (Mode dev)  โดยเข้าไปที่ **path** geonode-mapstore-client/geonode\_mapstore\_client/client
+
+
+1. ติดตั้ง node package
+
+
+|npm install|
+| :- |
+
+1. สร้างไฟล์ .env และ เพิ่มข้อมูลดังนี้
+
+
+|<p></p><p>DEV\_SERVER\_PROTOCOL=http</p><p>DEV\_SERVER\_HOSTNAME=localhost</p><p>DEV\_TARGET\_GEONODE\_HOST=localhost:8000</p><p></p>|
+| :- |
+\*\* 8000 คือ port ของ geonode ที่ run mode dev
+
+
+1. กรณีฟ้องไม่พบ Mapstore2
+
+![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.014.png)
+
+ให้ใช้คำสั่ง
+
+|<p>git submodule init</p><p>git submodule update </p>|
+| :- |
+
+และใช้ npm install อีกครั้ง
+
+\*\*\*\* หากไม่มีอะไรเกิดขึ้น ให้ทำการ clone repo mapstore2 ลงมาเองในโฟล์เดอร์ client
+
+
+|git clone <https://github.com/geosolutions-it/MapStore2.git> -b 2022.01.xx|
+| :- |
+
+![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.015.png)
+
+และใช้ npm install อีกครั้ง
+
+หากไม่มีอะไรผิดพลาด สามารถใช้คำสั่ง npm start ได้เลย 
+
+
+
+
+
+
+
+
+
+
+
+
+1. ทดลองเปิด <http://localhost:8081>
+
+![](Aspose.Words.aa982a3c-8675-4dab-84ef-f7e9f082574c.016.png)
+
+Thank you
+
+
+
 Licensing
 ---------
 
@@ -169,3 +370,5 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along
 with GeoNode. If not, see http://www.gnu.org/licenses.
+
+
