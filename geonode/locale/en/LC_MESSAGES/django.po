@@ -145,7 +145,7 @@ msgid "Owner"
 msgstr "Owner"
 
 msgid "Date"
-msgstr "Date"
+msgstr "Published Date"
 
 msgid "temporal extent start"
 msgstr "temporal extent start"
