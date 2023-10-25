@@ -164,7 +164,7 @@ msgid "Owner"
 msgstr "ผู้นำเข้า/ดูแลข้อมูลบนระบบ"
 
 msgid "Date"
-msgstr "วันที่อ้างอิงของชุดข้อมูล"
+msgstr "วันที่เผยแพร่"
 
 msgid "temporal extent start"
 msgstr "ข้อมูลเพิ่มเติมเกี่ยวกับขอบเขตของข้อมูล เริ่มต้น"
@@ -297,7 +297,7 @@ msgid "purpose"
 msgstr "ข้อความบอกความเป็นมาและกระบวนการจัดทำข้อมูล"
 
 msgid "date"
-msgstr "วันที่อ้างอิงของชุดข้อมูล"
+msgstr "วันที่เผยแพร่"
 
 msgid "date type"
 msgstr "ชนิดของวันที่"
