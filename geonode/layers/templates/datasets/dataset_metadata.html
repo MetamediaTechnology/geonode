@@ -10,18 +10,6 @@
 
 {% block head %}
     {% include "ol/datasets/dataset_ol2_map.html" %}
-    <script>
-      document.addEventListener("DOMContentLoaded", function(){
-        const resourceType = document.getElementsByName("resource-date_type")[0]
-        const groupInfo = document.getElementById("basicGroupInfo")
-          if(resourceType) {
-            resourceType.parentElement.style.display = "none"
-          }
-          if(groupInfo) {
-            groupInfo.style.display = "none"
-          }
-      });
-    </script>
 {{ block.super }}
 {% endblock head %}
 
