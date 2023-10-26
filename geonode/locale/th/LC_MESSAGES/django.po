@@ -200,7 +200,7 @@ msgid "License"
 msgstr "ใบอนุญาต"
 
 msgid "Language"
-msgstr "ภาษา"
+msgstr "ภาษาของชุดข้อมูล"
 
 msgid "User"
 msgid_plural "Users"
@@ -285,7 +285,7 @@ msgid "general explanation of the data producer's knowledge about the lineage of
 msgstr "คำอธิบายทั่วไปของความรู้ผลิตข้อมูลเกี่ยวกับเชื้อสายของชุดข้อมูล"
 
 msgid "title"
-msgstr "ชื่อชุดข้อมูล"
+msgstr "ชื่อชุดข้อมูล (Name)"
 
 msgid "name by which the cited resource is known"
 msgstr "ชื่อของแหล่งข้อมูลที่เป็นที่รู้จักกัน"
@@ -312,7 +312,7 @@ msgid "DOI"
 msgstr "DOI"
 
 msgid "maintenance frequency"
-msgstr "ความถี่ในการเผยแพร่ข้อมูล"
+msgstr "ความถี่ในการปรับปรุงข้อมูล"
 
 msgid "keywords"
 msgstr "คำสำคัญ"
