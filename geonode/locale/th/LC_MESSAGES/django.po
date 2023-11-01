@@ -167,10 +167,10 @@ msgid "Date"
 msgstr "วันที่เผยแพร่"
 
 msgid "temporal extent start"
-msgstr "ข้อมูลเพิ่มเติมเกี่ยวกับขอบเขตของข้อมูล เริ่มต้น"
+msgstr "ข้อมูลเพิ่มเติมเกี่ยวกับขอบเขตของข้อมูล (ทางดิ่ง ทางเวลา) เริ่มต้น"
 
 msgid "temporal extent end"
-msgstr "ข้อมูลเพิ่มเติมเกี่ยวกับขอบเขตของข้อมูล สิ้นสุด"
+msgstr "ข้อมูลเพิ่มเติมเกี่ยวกับขอบเขตของข้อมูล (ทางดิ่ง ทางเวลา) สิ้นสุด"
 
 msgid "Person outside GeoNode (fill form)"
 msgstr ""
@@ -200,7 +200,7 @@ msgid "License"
 msgstr "ใบอนุญาต"
 
 msgid "Language"
-msgstr "ภาษาของชุดข้อมูล"
+msgstr "ภาษาข้อมูลใน metadata"
 
 msgid "User"
 msgid_plural "Users"
@@ -306,7 +306,7 @@ msgid "edition"
 msgstr "เวอร์ชันของรูปแบบของชุดข้อมูล"
 
 msgid "Attribution"
-msgstr "ผู้รับผิดชอบชุดข้อมูล/การติดต่อเกี่ยวกับ metadata"
+msgstr "ผู้รับผิดชอบชุดข้อมูล"
 
 msgid "DOI"
 msgstr "DOI"
@@ -453,7 +453,7 @@ msgid "More info"
 msgstr "ข้อมูลเพิ่มเติม"
 
 msgid "Maintenance Frequency"
-msgstr "ความถี่ในการเผยแพร่ข้อมูล"
+msgstr "ความถี่ในการปรับปรุงข้อมูล"
 
 msgid "Restrictions"
 msgstr "ข้อจำกัด"

@@ -130,13 +130,13 @@ msgid "Abstract"
 msgstr "Abstract"
 
 msgid "Purpose"
-msgstr "Purpose"
+msgstr "Lineage Statement"
 
 msgid "Other constraints"
-msgstr "Other constraints"
+msgstr "Dataset Scale"
 
 msgid "Supplemental information"
-msgstr "Supplemental information"
+msgstr "On-line Resource"
 
 msgid "Data quality statement"
 msgstr "Data quality statement"
@@ -145,7 +145,7 @@ msgid "Owner"
 msgstr "Owner"
 
 msgid "Date"
-msgstr "Date"
+msgstr "Published"
 
 msgid "temporal extent start"
 msgstr "temporal extent start"
@@ -185,7 +185,7 @@ msgid "License"
 msgstr "License"
 
 msgid "Language"
-msgstr "Language"
+msgstr "Metadata Language"
 
 msgid "User"
 msgid_plural "Users"
@@ -305,7 +305,7 @@ msgid "name by which the cited resource is known"
 msgstr "name by which the cited resource is known"
 
 msgid "abstract"
-msgstr "abstract"
+msgstr "Abstract"
 
 msgid "purpose"
 msgstr "purpose"
@@ -320,7 +320,7 @@ msgid "edition"
 msgstr "edition"
 
 msgid "Attribution"
-msgstr "Attribution"
+msgstr "Responsible Party"
 
 msgid "DOI"
 msgstr "DOI"
@@ -444,7 +444,7 @@ msgid "Responsible"
 msgstr "Responsible"
 
 msgid "Title"
-msgstr "Title"
+msgstr "Dataset Name (Name)"
 
 msgid "SRID"
 msgstr "SRID"
