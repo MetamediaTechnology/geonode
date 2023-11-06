@@ -539,9 +539,9 @@ MARKDOWNIFY_STRIP = os.getenv('MARKDOWNIFY_STRIP', False)
 INSTALLED_APPS += GEONODE_APPS
 
 # Keycloak
-INSTALLED_APPS += (
-    'allauth.socialaccount.providers.keycloak',
-)
+# INSTALLED_APPS += (
+#     'allauth.socialaccount.providers.keycloak',
+# )
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -1417,19 +1417,6 @@ if RECAPTCHA_ENABLED:
 
 GEONODE_CATALOGUE_METADATA_XSL = ast.literal_eval(os.getenv('GEONODE_CATALOGUE_METADATA_XSL', 'True'))
 
-if 'keycloaksync' not in INSTALLED_APPS:
-    INSTALLED_APPS += ('keycloaksync',)
-KEYCLOAK_URL= 'https://auth.longdo.com/auth'
-KEYCLOAK_CLIENT = 'geonode'
-KEYCLOAK_CLIENT_ID = '477f0cdd-45f6-4f35-b002-e697497f65e0'
-KEYCLOAK_CLIENT_SECRET = 'OeazC0IzemxbWKRx9L0am41xl9ztm04F'
-KEYCLOAK_REALM = 'dohonemap'
-KEYCLOAK_USER= False
-#KEYCLOAK_PASSWORD=''
-KEYCLOAK_USER_REALM='master'
-KEYCLOAK_GRANT_TYPE = 'client_credentials'
-KEYCLOAK_SCOPE = 'openid roles'
-KEYCLOAK_HOST_URL = 'https://auth.longdo.com'
 
 # -- START Client Hooksets Setup
 
@@ -2037,11 +2024,7 @@ SOCIALACCOUNT_PROVIDERS = {
             'link',
             'gender',
         ]
-    },
-    'keycloak': {
-        'KEYCLOAK_URL': 'https://auth.longdo.com/auth',
-        'KEYCLOAK_REALM': 'dohonemap'
-    },
+    }
 }
 
 SOCIALACCOUNT_PROFILE_EXTRACTORS = {
