@@ -323,7 +323,7 @@ msgid "Attribution"
 msgstr "Responsible Party"
 
 msgid "DOI"
-msgstr "รหัสชุดข้อมูล"
+msgstr "Dataset Number"
 
 msgid "maintenance frequency"
 msgstr "maintenance frequency"

@@ -309,7 +309,7 @@ msgid "Attribution"
 msgstr "ผู้รับผิดชอบชุดข้อมูล"
 
 msgid "DOI"
-msgstr "Dataset Number"
+msgstr "รหัสชุดข้อมูล"
 
 msgid "maintenance frequency"
 msgstr "ความถี่ในการปรับปรุงข้อมูล"
