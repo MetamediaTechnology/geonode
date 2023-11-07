@@ -194,7 +194,7 @@ msgid "Group"
 msgstr "กลุ่ม"
 
 msgid "Category"
-msgstr "ประเภทหัวข้อของชุดข้อมูล"
+msgstr "หมวดหมูชั้นข้อมูล"
 
 msgid "License"
 msgstr "ใบอนุญาต"

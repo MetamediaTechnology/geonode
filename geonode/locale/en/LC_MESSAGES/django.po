@@ -299,7 +299,7 @@ msgstr ""
 "dataset"
 
 msgid "title"
-msgstr "title"
+msgstr "Dataset Name (Name)"
 
 msgid "name by which the cited resource is known"
 msgstr "name by which the cited resource is known"
