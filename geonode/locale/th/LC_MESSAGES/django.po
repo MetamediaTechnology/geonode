@@ -200,7 +200,7 @@ msgid "License"
 msgstr "ใบอนุญาต"
 
 msgid "Language"
-msgstr "ภาษาข้อมูลใน metadata"
+msgstr "ภาษา"
 
 msgid "User"
 msgid_plural "Users"
@@ -321,13 +321,13 @@ msgid "keywords region"
 msgstr "ภูมิภาคคำหลัก"
 
 msgid "restrictions"
-msgstr "ข้อจำกัด"
+msgstr "เงื่อนไขในการเข้าถึงข้อมูล"
 
 msgid "restrictions other"
-msgstr "ข้อจำกัดอื่นๆ"
+msgstr "เงื่อนไขอื่น ๆ"
 
 msgid "language"
-msgstr "ภาษา"
+msgstr "ภาษาข้อมูลใน metadata"
 
 msgid "spatial representation type"
 msgstr "ชนิดการบันทึกข้อมูลเชิงพื้นที่"

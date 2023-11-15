@@ -185,7 +185,7 @@ msgid "License"
 msgstr "License"
 
 msgid "Language"
-msgstr "Metadata Language"
+msgstr "Language"
 
 msgid "User"
 msgid_plural "Users"
@@ -335,13 +335,13 @@ msgid "keywords region"
 msgstr "keywords region"
 
 msgid "restrictions"
-msgstr "restrictions"
+msgstr "Data condition"
 
 msgid "restrictions other"
 msgstr "restrictions other"
 
 msgid "language"
-msgstr "language"
+msgstr "Metadata Language"
 
 msgid "spatial representation type"
 msgstr "spatial representation type"
@@ -474,7 +474,7 @@ msgid "Maintenance Frequency"
 msgstr "Maintenance Frequency"
 
 msgid "Restrictions"
-msgstr "Restrictions"
+msgstr "Data condition"
 
 msgid "Edition"
 msgstr "Edition"
