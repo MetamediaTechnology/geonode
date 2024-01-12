@@ -173,10 +173,10 @@ msgid "Date"
 msgstr "วันที่เผยแพร่"
 
 msgid "temporal extent start"
-msgstr "ข้อมูลเพิ่มเติมเกี่ยวกับขอบเขตของข้อมูล เริ่มต้น"
+msgstr "ข้อมูลเพิ่มเติมเกี่ยวกับขอบเขตของข้อมูล (ทางดิ่ง ทางเวลา) เริ่มต้น"
 
 msgid "temporal extent end"
-msgstr "ข้อมูลเพิ่มเติมเกี่ยวกับขอบเขตของข้อมูล สิ้นสุด"
+msgstr "ข้อมูลเพิ่มเติมเกี่ยวกับขอบเขตของข้อมูล (ทางดิ่ง ทางเวลา) สิ้นสุด"
 
 msgid "Person outside GeoNode (fill form)"
 msgstr ""
@@ -200,7 +200,7 @@ msgid "Group"
 msgstr "กลุ่ม"
 
 msgid "Category"
-msgstr "ประเภทหัวข้อของชุดข้อมูล"
+msgstr "หมวดหมูชั้นข้อมูล"
 
 msgid "License"
 msgstr "ใบอนุญาต"
@@ -291,7 +291,7 @@ msgid "general explanation of the data producer's knowledge about the lineage of
 msgstr "คำอธิบายทั่วไปของความรู้ผลิตข้อมูลเกี่ยวกับเชื้อสายของชุดข้อมูล"
 
 msgid "title"
-msgstr "ชื่อชุดข้อมูล"
+msgstr "ชื่อชุดข้อมูล (Name)"
 
 msgid "name by which the cited resource is known"
 msgstr "ชื่อของแหล่งข้อมูลที่เป็นที่รู้จักกัน"
@@ -312,13 +312,13 @@ msgid "edition"
 msgstr "เวอร์ชันของรูปแบบของชุดข้อมูล"
 
 msgid "Attribution"
-msgstr "ผู้รับผิดชอบชุดข้อมูล/การติดต่อเกี่ยวกับ metadata"
+msgstr "ผู้รับผิดชอบชุดข้อมูล"
 
 msgid "DOI"
-msgstr "DOI"
+msgstr "รหัสชุดข้อมูล"
 
 msgid "maintenance frequency"
-msgstr "ความถี่ในการเผยแพร่ข้อมูล"
+msgstr "ความถี่ในการปรับปรุงข้อมูล"
 
 msgid "keywords"
 msgstr "คำสำคัญ"
@@ -327,13 +327,13 @@ msgid "keywords region"
 msgstr "ภูมิภาคคำหลัก"
 
 msgid "restrictions"
-msgstr "ข้อจำกัด"
+msgstr "เงื่อนไขในการเข้าถึงข้อมูล"
 
 msgid "restrictions other"
-msgstr "ข้อจำกัดอื่นๆ"
+msgstr "เงื่อนไขอื่น ๆ"
 
 msgid "language"
-msgstr "ภาษา"
+msgstr "ภาษาข้อมูลใน metadata"
 
 msgid "spatial representation type"
 msgstr "ชนิดการบันทึกข้อมูลเชิงพื้นที่"
@@ -459,7 +459,7 @@ msgid "More info"
 msgstr "ข้อมูลเพิ่มเติม"
 
 msgid "Maintenance Frequency"
-msgstr "ความถี่ในการเผยแพร่ข้อมูล"
+msgstr "ความถี่ในการปรับปรุงข้อมูล"
 
 msgid "Restrictions"
 msgstr "ข้อจำกัด"

@@ -136,13 +136,13 @@ msgid "Abstract"
 msgstr "Abstract"
 
 msgid "Purpose"
-msgstr "Purpose"
+msgstr "Lineage Statement"
 
 msgid "Other constraints"
-msgstr "Other constraints"
+msgstr "Dataset Scale"
 
 msgid "Supplemental information"
-msgstr "Supplemental information"
+msgstr "On-line Resource"
 
 msgid "Data quality statement"
 msgstr "Data quality statement"
@@ -151,7 +151,7 @@ msgid "Owner"
 msgstr "Owner"
 
 msgid "Date"
-msgstr "Date"
+msgstr "Published"
 
 msgid "temporal extent start"
 msgstr "temporal extent start"
@@ -305,13 +305,13 @@ msgstr ""
 "dataset"
 
 msgid "title"
-msgstr "title"
+msgstr "Dataset Name (Name)"
 
 msgid "name by which the cited resource is known"
 msgstr "name by which the cited resource is known"
 
 msgid "abstract"
-msgstr "abstract"
+msgstr "Abstract"
 
 msgid "purpose"
 msgstr "purpose"
@@ -326,10 +326,10 @@ msgid "edition"
 msgstr "edition"
 
 msgid "Attribution"
-msgstr "Attribution"
+msgstr "Responsible Party"
 
 msgid "DOI"
-msgstr "DOI"
+msgstr "Dataset Number"
 
 msgid "maintenance frequency"
 msgstr "published frequency"
@@ -341,13 +341,13 @@ msgid "keywords region"
 msgstr "keywords region"
 
 msgid "restrictions"
-msgstr "restrictions"
+msgstr "Data condition"
 
 msgid "restrictions other"
 msgstr "restrictions other"
 
 msgid "language"
-msgstr "language"
+msgstr "Metadata Language"
 
 msgid "spatial representation type"
 msgstr "spatial representation type"
@@ -450,7 +450,7 @@ msgid "Responsible"
 msgstr "Responsible"
 
 msgid "Title"
-msgstr "Title"
+msgstr "Dataset Name (Name)"
 
 msgid "SRID"
 msgstr "SRID"
@@ -480,7 +480,7 @@ msgid "Maintenance Frequency"
 msgstr "Published Frequency"
 
 msgid "Restrictions"
-msgstr "Restrictions"
+msgstr "Data condition"
 
 msgid "Edition"
 msgstr "Edition"
