@@ -133,6 +133,12 @@ msgstr "ข้อมูลมีการปรับปรุงปีละ 2 
 msgid "data is updated every three months"
 msgstr "ข้อมูลมีการปรับปรุงทุก 3 เดือน"
 
+msgid "data is updated according to schedule a survey"
+msgstr "ข้อมูลมีการปรับปรุงตามรอบสำรวจ"
+
+msgid "data is updated according to budget year"
+msgstr "ข้อมูลมีการปรับปรุงตามงบประมาณ"
+
 msgid "No information provided"
 msgstr "ไม่มีการให้ข้อมูล"
 

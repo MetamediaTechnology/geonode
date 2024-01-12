@@ -114,6 +114,12 @@ msgstr "data is updated twice each year"
 msgid "data is updated every three months"
 msgstr "data is updated every three months"
 
+msgid "data is updated according to schedule a survey"
+msgstr "data is updated according to schedule a survey"
+
+msgid "data is updated according to budget year"
+msgstr "data is updated according to budget year"
+
 msgid "No information provided"
 msgstr "No information provided"
 
@@ -326,7 +332,7 @@ msgid "DOI"
 msgstr "DOI"
 
 msgid "maintenance frequency"
-msgstr "maintenance frequency"
+msgstr "published frequency"
 
 msgid "keywords"
 msgstr "keywords"
@@ -471,7 +477,7 @@ msgid "More info"
 msgstr "More info"
 
 msgid "Maintenance Frequency"
-msgstr "Maintenance Frequency"
+msgstr "Published Frequency"
 
 msgid "Restrictions"
 msgstr "Restrictions"

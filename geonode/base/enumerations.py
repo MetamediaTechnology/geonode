@@ -55,6 +55,8 @@ UPDATE_FREQUENCIES = (
     ('weekly', _('data is updated on a weekly basis')),
     ('biannually', _('data is updated twice each year')),
     ('quarterly', _('data is updated every three months')),
+    ('scheduleSurvey', _('data is updated according to schedule a survey')),
+    ('budgetYear', _('data is updated according to budget year')),
 )
 
 CONTACT_FIELDS = [
