@@ -318,7 +318,7 @@ msgid "DOI"
 msgstr "รหัสชุดข้อมูล"
 
 msgid "maintenance frequency"
-msgstr "ความถี่ในการปรับปรุงข้อมูล"
+msgstr "ความถี่ในการเผยแพร่ข้อมูล"
 
 msgid "keywords"
 msgstr "คำสำคัญ"
@@ -459,7 +459,7 @@ msgid "More info"
 msgstr "ข้อมูลเพิ่มเติม"
 
 msgid "Maintenance Frequency"
-msgstr "ความถี่ในการปรับปรุงข้อมูล"
+msgstr "ความถี่ในการเผยแพร่ข้อมูล"
 
 msgid "Restrictions"
 msgstr "ข้อจำกัด"
