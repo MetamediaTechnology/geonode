@@ -139,6 +139,9 @@ msgstr "ข้อมูลมีการปรับปรุงตามรอ
 msgid "data is updated according to budget year"
 msgstr "ข้อมูลมีการปรับปรุงตามงบประมาณ"
 
+msgid "no updates after data storage"
+msgstr "ไม่มีการปรับปรุงหลังจากการจัดเก็บข้อมูล"
+
 msgid "No information provided"
 msgstr "ไม่มีการให้ข้อมูล"
 

@@ -57,6 +57,7 @@ UPDATE_FREQUENCIES = (
     ('quarterly', _('data is updated every three months')),
     ('scheduleSurvey', _('data is updated according to schedule a survey')),
     ('budgetYear', _('data is updated according to budget year')),
+    ('noUpdateAfterStore', _('no updates after data storage')),
 )
 
 CONTACT_FIELDS = [

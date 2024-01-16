@@ -120,6 +120,9 @@ msgstr "data is updated according to schedule a survey"
 msgid "data is updated according to budget year"
 msgstr "data is updated according to budget year"
 
+msgid "no updates after data storage"
+msgstr "no updates after data storage"
+
 msgid "No information provided"
 msgstr "No information provided"
 
